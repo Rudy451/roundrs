@@ -1,0 +1,3180 @@
+{
+  "prices": {
+    "NVDA": [
+      {
+        "ticker": "NVDA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047068777,
+        "error": true
+      },
+      {
+        "ticker": "NVDA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047127991,
+        "error": true
+      },
+      {
+        "ticker": "NVDA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047188033,
+        "error": true
+      },
+      {
+        "ticker": "NVDA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047248028,
+        "error": true
+      },
+      {
+        "ticker": "NVDA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047308305,
+        "error": true
+      },
+      {
+        "ticker": "NVDA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047368299,
+        "error": true
+      },
+      {
+        "ticker": "NVDA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047435949,
+        "error": true
+      },
+      {
+        "ticker": "NVDA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047488280,
+        "error": true
+      },
+      {
+        "ticker": "NVDA",
+        "price": 188.63,
+        "changePercent": 2.5514216,
+        "timestamp": 1776047548462
+      },
+      {
+        "ticker": "NVDA",
+        "price": 189.31,
+        "changePercent": 0.299347,
+        "timestamp": 1776145328962
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776490774065
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776490827502
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776490887514
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776490947529
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491007309
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491067505
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491127462
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491231571
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491291509
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491308886
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491367470
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491471468
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491529631
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491547495
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491602228
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491662215
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491722199
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491782262
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491842294
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491902520
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776491962445
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776492197005
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776492248527
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776492249279
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776492910009
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776492970554
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776493030454
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776493142271
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776665672207
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776665688423
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776665689345
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776665748359
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776665809188
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776665823521
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776673510137
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776673524897
+      },
+      {
+        "ticker": "NVDA",
+        "price": 201.68,
+        "changePercent": 1.67884,
+        "timestamp": 1776673524878
+      }
+    ],
+    "MSFT": [
+      {
+        "ticker": "MSFT",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047068778,
+        "error": true
+      },
+      {
+        "ticker": "MSFT",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047127993,
+        "error": true
+      },
+      {
+        "ticker": "MSFT",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047188040,
+        "error": true
+      },
+      {
+        "ticker": "MSFT",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047248033,
+        "error": true
+      },
+      {
+        "ticker": "MSFT",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047308311,
+        "error": true
+      },
+      {
+        "ticker": "MSFT",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047368306,
+        "error": true
+      },
+      {
+        "ticker": "MSFT",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047435952,
+        "error": true
+      },
+      {
+        "ticker": "MSFT",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047488283,
+        "error": true
+      },
+      {
+        "ticker": "MSFT",
+        "price": 370.87,
+        "changePercent": -0.58970493,
+        "timestamp": 1776047548511
+      },
+      {
+        "ticker": "MSFT",
+        "price": 384.37,
+        "changePercent": 3.64009,
+        "timestamp": 1776145328989
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776490774091
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776490827532
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776490887551
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776490947565
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491007335
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491067543
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491127499
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491231636
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491291537
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491308912
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491367503
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491471500
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491529660
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491547523
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491602424
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491662237
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491722227
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491782288
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491842324
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491902553
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776491962475
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776492197042
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776492248563
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776492249296
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776492910039
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776492970592
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776493030480
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776493142310
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776665672235
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776665688453
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776665689379
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776665748397
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776665809225
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776665823556
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776673510178
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776673524936
+      },
+      {
+        "ticker": "MSFT",
+        "price": 422.79,
+        "changePercent": 0.602008,
+        "timestamp": 1776673524918
+      }
+    ],
+    "SPY": [
+      {
+        "ticker": "SPY",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047068779,
+        "error": true
+      },
+      {
+        "ticker": "SPY",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047127997,
+        "error": true
+      },
+      {
+        "ticker": "SPY",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047188044,
+        "error": true
+      },
+      {
+        "ticker": "SPY",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047248038,
+        "error": true
+      },
+      {
+        "ticker": "SPY",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047308322,
+        "error": true
+      },
+      {
+        "ticker": "SPY",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047368312,
+        "error": true
+      },
+      {
+        "ticker": "SPY",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047435956,
+        "error": true
+      },
+      {
+        "ticker": "SPY",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047488287,
+        "error": true
+      },
+      {
+        "ticker": "SPY",
+        "price": 679.46,
+        "changePercent": -0.0661781,
+        "timestamp": 1776047548550
+      },
+      {
+        "ticker": "SPY",
+        "price": 686.1,
+        "changePercent": 0.97724,
+        "timestamp": 1776145329015
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776490774114
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776490827570
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776490887584
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776490947601
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491007361
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491067578
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491127532
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491231709
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491291564
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491308935
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491367539
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491471527
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491529686
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491547552
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491602484
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491662261
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491722250
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491782326
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491842356
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491902585
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776491962510
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776492197083
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776492248600
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776492249312
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776492910070
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776492970621
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776493030506
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776493142332
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776665672265
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776665688483
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776665689404
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776665748432
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776665809259
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776665823593
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776673510223
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776673524975
+      },
+      {
+        "ticker": "SPY",
+        "price": 710.14,
+        "changePercent": 1.20857,
+        "timestamp": 1776673524957
+      }
+    ],
+    "GUSH": [
+      {
+        "ticker": "GUSH",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047068783,
+        "error": true
+      },
+      {
+        "ticker": "GUSH",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047127998,
+        "error": true
+      },
+      {
+        "ticker": "GUSH",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047188047,
+        "error": true
+      },
+      {
+        "ticker": "GUSH",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047248040,
+        "error": true
+      },
+      {
+        "ticker": "GUSH",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047308327,
+        "error": true
+      },
+      {
+        "ticker": "GUSH",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047368316,
+        "error": true
+      },
+      {
+        "ticker": "GUSH",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047435957,
+        "error": true
+      },
+      {
+        "ticker": "GUSH",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047488290,
+        "error": true
+      },
+      {
+        "ticker": "GUSH",
+        "price": 37.69,
+        "changePercent": 0.721541,
+        "timestamp": 1776047548588
+      },
+      {
+        "ticker": "GUSH",
+        "price": 37.8,
+        "changePercent": 0.291856,
+        "timestamp": 1776145329043
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776490774138
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776490827611
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776490887620
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776490947637
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491007389
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491067618
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491127560
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491231790
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491291590
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491308960
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491367573
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491471556
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491529711
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491547577
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491602658
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491662285
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491722277
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491782350
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491842385
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491902622
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776491962537
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776492197116
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776492248635
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776492249326
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776492910099
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776492970650
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776493030545
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776493142353
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776665672295
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776665688517
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776665689424
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776665748462
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776665809295
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776665823625
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776673510263
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776673525014
+      },
+      {
+        "ticker": "GUSH",
+        "price": 33.66,
+        "changePercent": -9.7829,
+        "timestamp": 1776673524992
+      }
+    ],
+    "AAPL": [
+      {
+        "ticker": "AAPL",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047068784,
+        "error": true
+      },
+      {
+        "ticker": "AAPL",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047128002,
+        "error": true
+      },
+      {
+        "ticker": "AAPL",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047188054,
+        "error": true
+      },
+      {
+        "ticker": "AAPL",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047248044,
+        "error": true
+      },
+      {
+        "ticker": "AAPL",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047308331,
+        "error": true
+      },
+      {
+        "ticker": "AAPL",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047368320,
+        "error": true
+      },
+      {
+        "ticker": "AAPL",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047435959,
+        "error": true
+      },
+      {
+        "ticker": "AAPL",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047488291,
+        "error": true
+      },
+      {
+        "ticker": "AAPL",
+        "price": 260.48,
+        "changePercent": -0.0038309526,
+        "timestamp": 1776047548622
+      },
+      {
+        "ticker": "AAPL",
+        "price": 259.2,
+        "changePercent": -0.4914,
+        "timestamp": 1776145329068
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776490774165
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776490827647
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776490887655
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776490947672
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491007420
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491067650
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491127590
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491231863
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491291614
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491308986
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491367606
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491471583
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491529742
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491547602
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491602691
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491662309
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491722304
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491782387
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491842414
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491902658
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776491962561
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776492197144
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776492248672
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776492249339
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776492910128
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776492970676
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776493030580
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776493142375
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776665672330
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776665688550
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776665689453
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776665748492
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776665809333
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776665823656
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776673510333
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776673525055
+      },
+      {
+        "ticker": "AAPL",
+        "price": 270.23,
+        "changePercent": 2.59302,
+        "timestamp": 1776673525085
+      }
+    ],
+    "TSLA": [
+      {
+        "ticker": "TSLA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047068786,
+        "error": true
+      },
+      {
+        "ticker": "TSLA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047128003,
+        "error": true
+      },
+      {
+        "ticker": "TSLA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047188060,
+        "error": true
+      },
+      {
+        "ticker": "TSLA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047248047,
+        "error": true
+      },
+      {
+        "ticker": "TSLA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047308334,
+        "error": true
+      },
+      {
+        "ticker": "TSLA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047368325,
+        "error": true
+      },
+      {
+        "ticker": "TSLA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047435963,
+        "error": true
+      },
+      {
+        "ticker": "TSLA",
+        "price": null,
+        "changePercent": 0,
+        "timestamp": 1776047488293,
+        "error": true
+      },
+      {
+        "ticker": "TSLA",
+        "price": 348.95,
+        "changePercent": 0.9766331,
+        "timestamp": 1776047548663
+      },
+      {
+        "ticker": "TSLA",
+        "price": 352.42,
+        "changePercent": 0.981103,
+        "timestamp": 1776145329094
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776490774190
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776490827687
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776490887690
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776490947706
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491007450
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491067678
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491127625
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491231912
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491291639
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491309011
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491367631
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491471610
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491529781
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491547626
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491602721
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491662337
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491722331
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491782417
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491842443
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491902699
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776491962596
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776492197174
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776492248708
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776492249353
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776492910157
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776492970703
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776493030610
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776493142398
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776665672367
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776665688587
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776665689485
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776665748524
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776665809367
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776665823689
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776673510372
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776673525093
+      },
+      {
+        "ticker": "TSLA",
+        "price": 400.62,
+        "changePercent": 3.01363,
+        "timestamp": 1776673525103
+      }
+    ]
+  },
+  "attention": {
+    "NVDA": [
+      {
+        "ticker": "NVDA",
+        "mentions": 1,
+        "timestamp": 1776047070132
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 1,
+        "timestamp": 1776047128886
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 1,
+        "timestamp": 1776047189087
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 1,
+        "timestamp": 1776047248970
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 1,
+        "timestamp": 1776047309208
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 1,
+        "timestamp": 1776047369432
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 1,
+        "timestamp": 1776047437094
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 1,
+        "timestamp": 1776047489300
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 1,
+        "timestamp": 1776047548923
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 1,
+        "timestamp": 1776145329545
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776490774583
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776490828297
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776490888308
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776490948273
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491008114
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491068381
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491128614
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491232644
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491292450
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491309609
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491368368
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491472222
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491530464
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491548234
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491602954
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491662908
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491722886
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491783060
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491842941
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491903376
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776491963164
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776492197721
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776492249243
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776492250092
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776492910739
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776492971419
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776493031605
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "timestamp": 1776493143042
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 0,
+        "timestamp": 1776665673045
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 0,
+        "timestamp": 1776665689227
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 0,
+        "timestamp": 1776665690089
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 0,
+        "timestamp": 1776665749173
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 0,
+        "timestamp": 1776665810065
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 0,
+        "timestamp": 1776665824429
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 0,
+        "timestamp": 1776673510768
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 0,
+        "timestamp": 1776673525662
+      },
+      {
+        "ticker": "NVDA",
+        "mentions": 0,
+        "timestamp": 1776673525845
+      }
+    ],
+    "MSFT": [
+      {
+        "ticker": "MSFT",
+        "mentions": 4,
+        "timestamp": 1776047070132
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 4,
+        "timestamp": 1776047128886
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 4,
+        "timestamp": 1776047189087
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 4,
+        "timestamp": 1776047248970
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 4,
+        "timestamp": 1776047309208
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 4,
+        "timestamp": 1776047369432
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 4,
+        "timestamp": 1776047437094
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 4,
+        "timestamp": 1776047489300
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 4,
+        "timestamp": 1776047548923
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 1,
+        "timestamp": 1776145329545
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776490774583
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776490828297
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776490888308
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776490948273
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491008114
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491068381
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491128614
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491232644
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491292450
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491309609
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491368368
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491472222
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491530464
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491548234
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491602954
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491662908
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491722886
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491783060
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491842941
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491903376
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776491963164
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776492197721
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776492249243
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776492250092
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776492910739
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776492971419
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776493031605
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 2,
+        "timestamp": 1776493143042
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 0,
+        "timestamp": 1776665673045
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 0,
+        "timestamp": 1776665689227
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 0,
+        "timestamp": 1776665690089
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 0,
+        "timestamp": 1776665749173
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 0,
+        "timestamp": 1776665810065
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 0,
+        "timestamp": 1776665824429
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 0,
+        "timestamp": 1776673510768
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 0,
+        "timestamp": 1776673525662
+      },
+      {
+        "ticker": "MSFT",
+        "mentions": 0,
+        "timestamp": 1776673525845
+      }
+    ],
+    "SPY": [
+      {
+        "ticker": "SPY",
+        "mentions": 7,
+        "timestamp": 1776047070132
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 7,
+        "timestamp": 1776047128886
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 7,
+        "timestamp": 1776047189087
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 7,
+        "timestamp": 1776047248970
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 7,
+        "timestamp": 1776047309208
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 7,
+        "timestamp": 1776047369432
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 7,
+        "timestamp": 1776047437094
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 7,
+        "timestamp": 1776047489300
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 7,
+        "timestamp": 1776047548923
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 13,
+        "timestamp": 1776145329545
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776490774583
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776490828297
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776490888308
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776490948273
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491008114
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491068381
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491128614
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491232644
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491292450
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491309609
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491368368
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491472222
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491530464
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491548234
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491602954
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491662908
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491722886
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491783060
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491842941
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491903376
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776491963164
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776492197721
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776492249243
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776492250092
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776492910739
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776492971419
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776493031605
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 4,
+        "timestamp": 1776493143042
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 8,
+        "timestamp": 1776665673045
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 8,
+        "timestamp": 1776665689227
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 8,
+        "timestamp": 1776665690089
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 8,
+        "timestamp": 1776665749173
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 8,
+        "timestamp": 1776665810065
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 8,
+        "timestamp": 1776665824429
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 11,
+        "timestamp": 1776673510768
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 11,
+        "timestamp": 1776673525662
+      },
+      {
+        "ticker": "SPY",
+        "mentions": 11,
+        "timestamp": 1776673525845
+      }
+    ],
+    "GUSH": [
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776047070132
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776047128886
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776047189087
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776047248970
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776047309208
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776047369432
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776047437094
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776047489300
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776047548923
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776145329545
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776490774583
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776490828297
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776490888308
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776490948273
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491008114
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491068381
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491128614
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491232644
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491292450
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491309609
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491368368
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491472222
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491530464
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491548234
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491602954
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491662908
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491722886
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491783060
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491842941
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491903376
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776491963164
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776492197721
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776492249243
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776492250092
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776492910739
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776492971419
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776493031605
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776493143042
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776665673045
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776665689227
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776665690089
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776665749173
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776665810065
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776665824429
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776673510768
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776673525662
+      },
+      {
+        "ticker": "GUSH",
+        "mentions": 0,
+        "timestamp": 1776673525845
+      }
+    ],
+    "AAPL": [
+      {
+        "ticker": "AAPL",
+        "mentions": 0,
+        "timestamp": 1776047070132
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 0,
+        "timestamp": 1776047128886
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 0,
+        "timestamp": 1776047189087
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 0,
+        "timestamp": 1776047248970
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 0,
+        "timestamp": 1776047309208
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 0,
+        "timestamp": 1776047369432
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 0,
+        "timestamp": 1776047437094
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 0,
+        "timestamp": 1776047489300
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 0,
+        "timestamp": 1776047548923
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 0,
+        "timestamp": 1776145329545
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776490774583
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776490828297
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776490888308
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776490948273
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491008114
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491068381
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491128614
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491232644
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491292450
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491309609
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491368368
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491472222
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491530464
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491548234
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491602954
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491662908
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491722886
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491783060
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491842941
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491903376
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776491963164
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776492197721
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776492249243
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776492250092
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776492910739
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776492971419
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776493031605
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 2,
+        "timestamp": 1776493143042
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 1,
+        "timestamp": 1776665673045
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 1,
+        "timestamp": 1776665689227
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 1,
+        "timestamp": 1776665690089
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 1,
+        "timestamp": 1776665749173
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 1,
+        "timestamp": 1776665810065
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 1,
+        "timestamp": 1776665824429
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 0,
+        "timestamp": 1776673510768
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 0,
+        "timestamp": 1776673525662
+      },
+      {
+        "ticker": "AAPL",
+        "mentions": 0,
+        "timestamp": 1776673525845
+      }
+    ],
+    "TSLA": [
+      {
+        "ticker": "TSLA",
+        "mentions": 3,
+        "timestamp": 1776047070132
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 3,
+        "timestamp": 1776047128886
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 3,
+        "timestamp": 1776047189087
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 3,
+        "timestamp": 1776047248970
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 3,
+        "timestamp": 1776047309208
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 3,
+        "timestamp": 1776047369432
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 3,
+        "timestamp": 1776047437094
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 3,
+        "timestamp": 1776047489300
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 3,
+        "timestamp": 1776047548923
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776145329545
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776490774583
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776490828297
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776490888308
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776490948273
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491008114
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491068381
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491128614
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491232644
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491292450
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491309609
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491368368
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491472222
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491530464
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491548234
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491602954
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491662908
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491722886
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491783060
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491842941
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491903376
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776491963164
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776492197721
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776492249243
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776492250092
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776492910739
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776492971419
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776493031605
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776493143042
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776665673045
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776665689227
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776665690089
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776665749173
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776665810065
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776665824429
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776673510768
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776673525662
+      },
+      {
+        "ticker": "TSLA",
+        "mentions": 0,
+        "timestamp": 1776673525845
+      }
+    ]
+  }
+}
