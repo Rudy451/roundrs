@@ -1,154 +1,268 @@
+// /lib/pipeline/themeSearch.js
 //
-// Executes targeted Reddit search queries for given themes.
-// Returns posts tagged with their originating theme + query.
-// Plugs into fetchRedditBatch() as an additive source.
+// Executes the query plan produced by themeExpander.buildQueryPlan().
+// This module does NOT generate queries — it only executes them.
 //
-// Uses Reddit's public search endpoint - no API key required.
-// Rate-limit aware: sequential execution with jitter between calls.
+// Guardrails enforced at execution time:
+//   - Post-level global deduplication (same post ID across queries)
+//   - Per-query yield classification (high / normal / low)
+//   - Request jitter (deterministic, not random)
+//   - HTTP error handling without aborting the run
+//   - Post quality pre-filter before returning
+//
+// All per-run limits (maxQueriesPerRun, maxPostsPerQuery, etc.) are read
+// from searchGuardrails.SEARCH_BUDGET — never defined here.
 
-import { expandThemes } from "./themeExpander.js";
+import { importRawPost }                             from "./post.js";
+import { SEARCH_BUDGET, classifyYield }              from "./searchGuardrails.js";
+import {
+  createSearchRunLog,
+  logQueryResult,
+  finalizeSearchRunLog,
+  storeSearchRunLog,
+  summarizeSearchRunLog,
+}                                                    from "./searchLog.js";
+import { queryFingerprint }                          from "./searchGuardrails.js";
 
-const SEARCH_SUBREDDITS = ["stocks", "investing", "wallstreetbets"];
-const POSTS_PER_QUERY = 15; // per subreddit per query - keeps total volume sane
-const SORT = "relevance"; // "relevance" | "new" | "hot" | "top"
-const TIME_FILTER = "week"; // "hour"|"day"|"week"|"month"|"year"|"all"
-const REQUEST_JITTER_MS = 400; // ms between requests - avoids rate limiting
-const USER_AGENT = "DraftBoard/2.0 theme-search (automated research tool)";
+const USER_AGENT    = "DraftBoard/2.0 theme-search";
+const FETCH_TIMEOUT = 8000; // ms
 
-function createTimeoutSignal(timeoutMs) {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+// ─── Single query executor ────────────────────────────────────────────────────
+
+/**
+ * Execute one search query across all configured subreddits.
+ * Returns shaped Post objects that passed importRawPost() quality checks.
+ *
+ * @param {string}   query    — search query string
+ * @param {string}   theme    — originating theme (for post tagging)
+ * @param {Set}      globalSeen — post IDs already seen in this run
+ * @returns {Promise<{
+ *   posts:     Post[],
+ *   fetched:   number,
+ *   kept:      number,
+ *   duped:     number,
+ *   httpStatus: number|null,
+ *   error:     string|null,
+ *   durationMs: number,
+ * }>}
+ */
+async function executeQuery(query, theme, globalSeen) {
+  const startedAt  = Date.now();
+  let   allRaw     = [];
+  let   httpStatus = null;
+  let   error      = null;
+
+  // Search all configured subreddits in parallel
+  const subResults = await Promise.allSettled(
+    SEARCH_BUDGET.subreddits.map(sub => searchSubreddit(sub, query))
+  );
+
+  for (const result of subResults) {
+    if (result.status === "fulfilled") {
+      httpStatus = result.value.status;
+      allRaw.push(...result.value.posts);
+    } else {
+      error = result.reason?.message ?? "unknown error";
+    }
+  }
+
+  const fetched = allRaw.length;
+
+  // Shape raw API objects into canonical Posts
+  // importRawPost() enforces quality thresholds (min title length, age, etc.)
+  const shaped = [];
+  for (const { raw, subreddit } of allRaw) {
+    const post = importRawPost(raw, subreddit, "theme", theme);
+    if (post) shaped.push(post);
+  }
+
+  // Global deduplication — drop posts already seen from another query
+  const kept  = [];
+  let   duped = 0;
+
+  for (const post of shaped) {
+    if (globalSeen.has(post.id)) {
+      duped++;
+    } else {
+      globalSeen.add(post.id);
+      kept.push(post);
+    }
+  }
 
   return {
-    signal: controller.signal,
-    cleanup: () => clearTimeout(timeoutId),
+    posts:      kept,
+    fetched,
+    kept:       kept.length,
+    duped,
+    filtered:   shaped.length - kept.length,
+    httpStatus,
+    error,
+    durationMs: Date.now() - startedAt,
   };
 }
 
+// ─── Single subreddit search ──────────────────────────────────────────────────
+
 /**
- * Search a single subreddit for a query string.
+ * Search one subreddit for a query string using Reddit's public JSON API.
+ *
  * @param {string} subreddit
  * @param {string} query
- * @returns {Promise<Post[]>}
+ * @returns {Promise<{ posts: Array<{raw, subreddit}>, status: number }>}
  */
 async function searchSubreddit(subreddit, query) {
   const params = new URLSearchParams({
-    q: query,
-    sort: SORT,
-    t: TIME_FILTER,
-    limit: String(POSTS_PER_QUERY),
-    raw_json: "1",
+    q:           query,
+    sort:        SEARCH_BUDGET.sort,
+    t:           SEARCH_BUDGET.timeFilter,
+    limit:       String(SEARCH_BUDGET.maxPostsPerQueryPerSub),
+    raw_json:    "1",
     restrict_sr: "1",
   });
 
   const url = `https://www.reddit.com/r/${subreddit}/search.json?${params}`;
-  const { signal, cleanup } = createTimeoutSignal(8000);
 
-  try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": USER_AGENT },
-      signal,
-    });
+  const res = await fetch(url, {
+    headers: { "User-Agent": USER_AGENT },
+    signal:  AbortSignal.timeout(FETCH_TIMEOUT),
+  });
 
-    if (!res.ok) {
-      console.warn(`[themeSearch] r/${subreddit} search "${query}" -> HTTP ${res.status}`);
-      return [];
-    }
-
-    const json = await res.json();
-
-    return (json?.data?.children || []).map((child) => {
-      const data = child.data;
-      return {
-        id: data.id,
-        subreddit,
-        title: data.title || "",
-        body: data.selftext || "",
-        score: data.score || 0,
-        created_utc: data.created_utc || Math.floor(Date.now() / 1000),
-        url: `https://reddit.com${data.permalink}`,
-        num_comments: data.num_comments || 0,
-      };
-    });
-  } catch (e) {
-    console.error(`[themeSearch] Failed r/${subreddit} "${query}":`, e.message);
-    return [];
-  } finally {
-    cleanup();
+  if (!res.ok) {
+    return { posts: [], status: res.status };
   }
+
+  const json     = await res.json();
+  const children = json?.data?.children || [];
+
+  return {
+    posts:  children.map(c => ({ raw: c.data, subreddit })),
+    status: res.status,
+  };
 }
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+// ─── Deterministic jitter ─────────────────────────────────────────────────────
+// Fixed delay between requests. Not random — same delay every time.
+// This is intentional: determinism matters more than IP rotation here.
+
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+// ─── Main export ─────────────────────────────────────────────────────────────
 
 /**
- * Run theme-targeted Reddit searches for a list of themes.
+ * Execute a validated query plan, enforcing all search guardrails at runtime.
  *
- * Execution model:
- *   - Expand themes -> queries (capped at 5 by expandThemes)
- *   - For each query: search all SEARCH_SUBREDDITS in parallel
- *   - Add jitter between queries to avoid rate limits
- *   - Deduplicate posts by ID across all results
- *
- * @param {string[]} themes e.g. ["AI", "oil", "interest rates"]
+ * @param {string[]} themes
+ * @param {Array<{ theme: string, query: string, source: string }>} plan
+ * @param {object}   planMeta — { slotAllocation, violations } from buildQueryPlan
+ * @param {string}   runId    — pipeline run identifier for logging
  * @returns {Promise<{
- *   themedBatches: Array<{ theme: string, query: string, posts: Post[] }>,
  *   allPosts:      Post[],
- *   meta:          ThemeSearchMeta
+ *   themedBatches: Array<{ theme, query, posts }>,
+ *   runLog:        SearchRunLog,
+ *   meta:          object,
  * }>}
  */
-export async function fetchThemePosts(themes) {
-  if (!themes || themes.length === 0) {
-    return { themedBatches: [], allPosts: [], meta: { queries: 0, posts: 0, themes: [] } };
+export async function executeQueryPlan(themes, plan, planMeta = {}, runId = "unknown") {
+  const startTime = Date.now();
+  const runLog    = createSearchRunLog(runId, themes);
+
+  runLog.slotAllocation   = planMeta.slotAllocation ?? {};
+  runLog.queriesPlanned   = plan.length;
+  runLog.violations       = planMeta.violations ?? [];
+
+  // Guard: if plan is empty or has violations, return early
+  if (plan.length === 0) {
+    console.warn("[themeSearch] Empty query plan — skipping execution");
+    finalizeSearchRunLog(runLog);
+    storeSearchRunLog(runLog);
+    return { allPosts: [], themedBatches: [], runLog, meta: { durationMs: 0, queries: 0, posts: 0 } };
   }
 
-  const startTime = Date.now();
-  const queryPlan = expandThemes(themes);
-  const themedBatches = [];
-  const globalSeen = new Set();
-  let totalPosts = 0;
+  const globalSeen   = new Set(); // post IDs seen across all queries this run
+  const themedBatches = [];       // per-query result batches
+  const allPosts     = [];        // flat deduped post list
 
-  console.log(`[themeSearch] Running ${queryPlan.length} queries for themes: ${themes.join(", ")}`);
+  // Execute queries sequentially with jitter between each.
+  // Sequential (not parallel) to be respectful of Reddit's public API
+  // and to allow globalSeen deduplication to work correctly.
+  for (let i = 0; i < plan.length; i++) {
+    const { theme, query, source } = plan[i];
+    const fp = queryFingerprint(query);
 
-  for (let i = 0; i < queryPlan.length; i++) {
-    const { theme, query } = queryPlan[i];
+    const result = await executeQuery(query, theme, globalSeen);
 
-    const subResults = await Promise.allSettled(
-      SEARCH_SUBREDDITS.map((subreddit) => searchSubreddit(subreddit, query))
+    // Build QueryLog entry
+    const queryLog = {
+      theme,
+      query,
+      source,
+      fingerprint:         fp,
+      fetched:             result.fetched,
+      afterGlobalDedup:    result.kept + result.filtered,
+      afterQualityFilter:  result.kept,
+      yieldClass:          classifyYield(result.kept),
+      durationMs:          result.durationMs,
+      httpStatus:          result.httpStatus,
+      error:               result.error ?? null,
+    };
+
+    logQueryResult(runLog, queryLog);
+
+    // Accumulate results
+    allPosts.push(...result.posts);
+    themedBatches.push({ theme, query, source, posts: result.posts });
+
+    console.log(
+      `[themeSearch] "${query}" (${theme}) → ` +
+      `fetched=${result.fetched} kept=${result.kept} ` +
+      `duped=${result.duped} yield=${queryLog.yieldClass} ` +
+      `${result.durationMs}ms`
     );
 
-    const posts = [];
-    subResults.forEach((result) => {
-      if (result.status === "fulfilled") posts.push(...result.value);
-    });
-
-    const unique = posts.filter((post) => {
-      if (globalSeen.has(post.id)) return false;
-      globalSeen.add(post.id);
-      return true;
-    });
-
-    themedBatches.push({ theme, query, posts: unique });
-    totalPosts += unique.length;
-
-    console.log(`[themeSearch] "${query}" (${theme}) -> ${unique.length} posts`);
-
-    if (i < queryPlan.length - 1) {
-      await sleep(REQUEST_JITTER_MS + Math.random() * 200);
+    // Jitter between requests — skip after the last query
+    if (i < plan.length - 1) {
+      await sleep(SEARCH_BUDGET.requestJitterMs);
     }
   }
 
-  const allPosts = themedBatches.flatMap((batch) => batch.posts);
+  finalizeSearchRunLog(runLog);
+  storeSearchRunLog(runLog);
+
+  const summary = summarizeSearchRunLog(runLog);
+  console.log(summary);
 
   const meta = {
-    durationMs: Date.now() - startTime,
-    queries: queryPlan.length,
-    queryPlan,
-    posts: totalPosts,
-    themes: [...new Set(queryPlan.map((item) => item.theme))],
-    subreddits: SEARCH_SUBREDDITS,
+    durationMs:  Date.now() - startTime,
+    queries:     plan.length,
+    queryPlan:   plan,
+    posts:       allPosts.length,
+    themes:      [...new Set(plan.map(p => p.theme))],
+    subreddits:  SEARCH_BUDGET.subreddits,
   };
 
-  console.log(`[themeSearch] Done - ${totalPosts} posts from ${queryPlan.length} queries in ${meta.durationMs}ms`);
+  return { allPosts, themedBatches, runLog, meta };
+}
 
-  return { themedBatches, allPosts, meta };
+/**
+ * High-level convenience function.
+ * Builds a query plan from themes and executes it in one call.
+ * Used by ingest.js.
+ *
+ * @param {string[]} themes
+ * @param {number[]} themeScores — optional, for coverage weighting
+ * @param {string}   runId
+ * @returns {Promise<{ allPosts, themedBatches, runLog, meta }>}
+ */
+export async function fetchThemePosts(themes, themeScores = [], runId = "unknown") {
+  // Import here to avoid circular dependency (themeExpander imports searchGuardrails,
+  // themeSearch must not import themeExpander at module level)
+  const { buildQueryPlan } = await import("./themeExpander.js");
+
+  const { plan, slotAllocation, violations } = await buildQueryPlan(
+    themes,
+    themeScores,
+    { useAI: true }
+  );
+
+  return executeQueryPlan(themes, plan, { slotAllocation, violations }, runId);
 }
