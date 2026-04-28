@@ -64,12 +64,12 @@ export default async function handler(req, res) {
       status:         "success",
       timestamp:      Date.now(),
       startedAt,
-      durationMs:     result.meta.durationMs,
-      postsProcessed: result.meta.stages?.ingest?.postCount      ?? 0,
-      tickersFound:   result.meta.stages?.extract?.uniqueTickers ?? 0,
-      candidates:     result.signals.length,
-      topTicker:      result.signals[0]?.ticker ?? null,
-      topScore:       result.signals[0]?.score  ?? null,
+      durationMs:     result.summary.durationMs,
+      postsProcessed: result.summary.postsIngested,
+      tickersFound:   result.summary.uniqueTickers,
+      candidates:     result.summary.candidates,
+      topTicker:      result.summary.topTicker,
+      topScore:       result.summary.topScore,
       source:         "vercel-cron",
     };
 
@@ -84,13 +84,13 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success:    true,
       runId,
-      durationMs: log.durationMs,
+      durationMs: result.summary.durationMs,
       summary: {
-        postsProcessed: log.postsProcessed,
-        tickersFound:   log.tickersFound,
-        candidates:     log.candidates,
-        topTicker:      log.topTicker,
-        topScore:       log.topScore,
+        postsProcessed: result.summary.postsIngested,
+        tickersFound:   result.summary.uniqueTickers,
+        candidates:     result.summary.candidates,
+        topTicker:      result.summary.topTicker,
+        topScore:       result.summary.topScore,
       },
     });
 

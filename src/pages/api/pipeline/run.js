@@ -1,9 +1,14 @@
 // /pages/api/pipeline/run.js
-// Thin API route — triggers the pipeline and returns ranked candidates.
-// GET  /api/pipeline/run           → live Reddit run
-// GET  /api/pipeline/run?dry=true  → mock data run (for dev/testing)
+//
+// Triggers the discovery pipeline and returns results.
+//
+// GET  /api/pipeline/run              → live Reddit run, 20 results
+// GET  /api/pipeline/run?dry=true     → mock data, no network (dev/testing)
+// GET  /api/pipeline/run?topN=10      → limit candidates returned
+//
+// Response shape matches PipelineResult from runner.js.
 
-import { runPipeline } from "@/lib/pipeline/runner";
+import { runDiscoveryPipeline } from "@/lib/pipeline/runner";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -11,13 +16,17 @@ export default async function handler(req, res) {
   }
 
   const dryRun = req.query.dry === "true";
-  const topN = parseInt(req.query.topN || "20", 10);
+  const topN   = Math.min(parseInt(req.query.topN || "20", 10), 50);
 
-  try {
-    const result = await runPipeline({ topN, dryRun, validateTickers: true });
-    return res.status(200).json(result);
-  } catch (e) {
-    console.error("[api/pipeline/run]", e);
-    return res.status(500).json({ error: e.message });
+  const result = await runDiscoveryPipeline({ topN, dryRun });
+
+  if (!result.success) {
+    return res.status(500).json({
+      success: false,
+      error:   result.error,
+      summary: result.summary,
+    });
   }
+
+  return res.status(200).json(result);
 }
