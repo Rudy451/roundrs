@@ -27,6 +27,7 @@ import { prioritizeSignals,
          summarizePrioritization }             from "./prioritize.js";
 import { getEdgeStats, clearEdgeLog }          from "./edgeLog.js";
 import { getMockBatch }                        from "./mockData.js";
+import { analyzeSignals, mergeAnalysis }       from "./analyze.js";
 
 // ─── PipelineResult schema ────────────────────────────────────────────────────
 //
@@ -63,6 +64,8 @@ const DEFAULTS = {
   themes:          ["AI", "oil", "interest rates", "crypto"],
   windowHours:     6,
   themeScores:     {},
+  analyze:         true,   // run AI analysis stage (stage 7) — set false to skip
+  analyzeTopN:     10,     // how many top tickers to send for analysis
 };
 
 // ─── Entry point ──────────────────────────────────────────────────────────────
@@ -80,6 +83,8 @@ const DEFAULTS = {
  * @param {string[]} options.themes          — investment themes for targeted search
  * @param {number}   options.windowHours     — snapshot time window in hours (default 6)
  * @param {object}   options.themeScores     — { theme: 0–100 } from themeScorer (optional)
+ * @param {boolean}  options.analyze         — run AI analysis stage (default true)
+ * @param {number}   options.analyzeTopN     — how many tickers to analyze (default 10)
  * @returns {Promise<PipelineResult>}
  */
 export async function runDiscoveryPipeline(options = {}) {
@@ -187,16 +192,46 @@ export async function runDiscoveryPipeline(options = {}) {
 
     console.log(`[pipeline:aggregate] ${aggregated.length} candidates — top: ${aggregated[0]?.ticker ?? "none"}`);
 
-    // ── Stage 6: Prioritize ──────────────────────────────────────────────────
+    // ── Stage 6: Prioritize ──────────────────────────────────────────────────────────
 
-    const signals   = prioritizeSignals(aggregated, cfg.themeScores);
-    const priSummary = summarizePrioritization(signals);
+    const ranked     = prioritizeSignals(aggregated, cfg.themeScores);
+    const priSummary = summarizePrioritization(ranked);
 
     stages.prioritize = priSummary;
 
-    console.log(`[pipeline:prioritize] top: ${signals[0]?.ticker ?? "none"} (${signals[0]?.totalScore ?? 0})`);
+    console.log(`[pipeline:prioritize] top: ${ranked[0]?.ticker ?? "none"} (${ranked[0]?.totalScore ?? 0})`);
 
-    // ── Assemble result ──────────────────────────────────────────────────────
+    // ── Stage 7: Analyze (AI, optional) ─────────────────────────────────────
+    // Interprets narratives and classifies signal types.
+    // Scores and rankings from Stage 6 are NOT modified here.
+    // If this stage fails, signals are returned without analysis.
+
+    let signals = ranked;
+
+    if (cfg.analyze && ranked.length > 0) {
+      try {
+        const analyses = await analyzeSignals(ranked, { topN: cfg.analyzeTopN });
+        signals = mergeAnalysis(ranked, analyses);
+
+        const aiCount  = analyses.filter(a => a.source === "claude").length;
+        const fbCount  = analyses.length - aiCount;
+        stages.analyze = {
+          analyzed:      aiCount,
+          fallbacks:     fbCount,
+          topSignalType: analyses[0]?.signal_type ?? null,
+          topConfidence: analyses[0]?.confidence  ?? null,
+        };
+
+        console.log(`[pipeline:analyze] ${aiCount} AI, ${fbCount} fallback — top: ${analyses[0]?.signal_type ?? "?"} (${analyses[0]?.confidence ?? "?"})`);
+      } catch (analyzeErr) {
+        console.warn(`[pipeline:analyze] Failed: ${analyzeErr.message}`);
+        stages.analyze = { error: analyzeErr.message };
+      }
+    } else {
+      stages.analyze = { skipped: true };
+    }
+
+    // ── Assemble result ─────────────────────────────────────────────────────────────────
 
     const summary = {
       runId,
@@ -222,7 +257,6 @@ export async function runDiscoveryPipeline(options = {}) {
       summary,
       meta: { stages },
     };
-
   } catch (err) {
     console.error(`[pipeline] Run ${runId} failed:`, err);
     return failResult(runId, startTime, stages, err.message);
