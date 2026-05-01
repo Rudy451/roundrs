@@ -28,6 +28,7 @@ import { prioritizeSignals,
 import { getEdgeStats, clearEdgeLog }          from "./edgeLog.js";
 import { getMockBatch }                        from "./mockData.js";
 import { analyzeSignals, mergeAnalysis }       from "./analyze.js";
+import { buildShortlist, summarizeShortlist }  from "./shortlist.js";
 
 // ─── PipelineResult schema ────────────────────────────────────────────────────
 //
@@ -66,6 +67,8 @@ const DEFAULTS = {
   themeScores:     {},
   analyze:         true,   // run AI analysis stage (stage 7) — set false to skip
   analyzeTopN:     10,     // how many top tickers to send for analysis
+  shortlist:       true,   // apply shortlist filter after analysis (stage 8)
+  maxCandidates:   10,     // max candidates in shortlist output
 };
 
 // ─── Entry point ──────────────────────────────────────────────────────────────
@@ -231,6 +234,22 @@ export async function runDiscoveryPipeline(options = {}) {
       stages.analyze = { skipped: true };
     }
 
+    // ── Stage 8: Shortlist ───────────────────────────────────────────────────────────────
+    // Rule-based filtering to final candidates.
+    // Every inclusion and exclusion carries a human-readable reason.
+
+    let shortlistResult = null;
+
+    if (cfg.shortlist && signals.length > 0) {
+      shortlistResult = buildShortlist(signals, { maxCandidates: cfg.maxCandidates });
+      stages.shortlist = shortlistResult.stats;
+      console.log(summarizeShortlist(shortlistResult));
+    } else {
+      stages.shortlist = { skipped: true };
+    }
+
+    const finalCandidates = shortlistResult?.candidates ?? [];
+
     // ── Assemble result ─────────────────────────────────────────────────────────────────
 
     const summary = {
@@ -240,19 +259,21 @@ export async function runDiscoveryPipeline(options = {}) {
       postsIngested: posts.length,
       postsFiltered: posts.length - normalized.length,
       uniqueTickers: uniqueTickers.size,
-      candidates:    signals.length,
-      topTicker:     signals[0]?.ticker    ?? null,
-      topScore:      signals[0]?.totalScore ?? null,
+      candidates:    finalCandidates.length,
+      topTicker:     finalCandidates[0]?.ticker       ?? null,
+      topScore:      finalCandidates[0]?.adjustedScore ?? null,
       snapshotId:    snapshot.snapshotId,
       edgeCases:     getEdgeStats(),
     };
 
-    console.log(`[pipeline] Run ${runId} complete — ${signals.length} signals, top: ${summary.topTicker} (${summary.topScore}) in ${summary.durationMs}ms`);
+    console.log(`[pipeline] Run ${runId} complete — ${finalCandidates.length} candidates, top: ${summary.topTicker} (${summary.topScore}) in ${summary.durationMs}ms`);
 
     return {
-      success:  true,
-      error:    null,
-      signals,
+      success:         true,
+      error:           null,
+      signals,               // full scored+analyzed list (all tickers)
+      candidates:      finalCandidates,  // shortlisted FinalCandidate[] (top N)
+      excluded:        shortlistResult?.excluded ?? [],
       snapshot,
       summary,
       meta: { stages },
