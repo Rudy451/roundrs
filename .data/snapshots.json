@@ -1,0 +1,250 @@
+[
+  {
+    "snapshotId": "2e9710207ed4a429",
+    "createdAt": 1777779510657,
+    "windowStart": 1777757910000,
+    "windowEnd": 1777779510657,
+    "windowHours": 6,
+    "postCount": 10,
+    "tickerCount": 15,
+    "tickers": [
+      {
+        "ticker": "NVDA",
+        "mentions": 3,
+        "mentionTimes": [
+          1777774710,
+          1777777710,
+          1777778910
+        ],
+        "avgUpvotes": 1603,
+        "postIds": [
+          "mock1",
+          "mock3",
+          "mock8"
+        ],
+        "subreddits": [
+          "stocks",
+          "wallstreetbets"
+        ]
+      },
+      {
+        "ticker": "AMD",
+        "mentions": 2,
+        "mentionTimes": [
+          1777774710,
+          1777778910
+        ],
+        "avgUpvotes": 1784,
+        "postIds": [
+          "mock3",
+          "mock8"
+        ],
+        "subreddits": [
+          "stocks",
+          "wallstreetbets"
+        ]
+      },
+      {
+        "ticker": "SMCI",
+        "mentions": 2,
+        "mentionTimes": [
+          1777777710,
+          1777778910
+        ],
+        "avgUpvotes": 2065,
+        "postIds": [
+          "mock1",
+          "mock3"
+        ],
+        "subreddits": [
+          "wallstreetbets"
+        ]
+      },
+      {
+        "ticker": "CCJ",
+        "mentions": 1,
+        "mentionTimes": [
+          1777777110
+        ],
+        "avgUpvotes": 567,
+        "postIds": [
+          "mock5"
+        ],
+        "subreddits": [
+          "stocks"
+        ]
+      },
+      {
+        "ticker": "CELH",
+        "mentions": 1,
+        "mentionTimes": [
+          1777775910
+        ],
+        "avgUpvotes": 445,
+        "postIds": [
+          "mock2"
+        ],
+        "subreddits": [
+          "stocks"
+        ]
+      },
+      {
+        "ticker": "FBTC",
+        "mentions": 1,
+        "mentionTimes": [
+          1777774110
+        ],
+        "avgUpvotes": 289,
+        "postIds": [
+          "mock7"
+        ],
+        "subreddits": [
+          "investing"
+        ]
+      },
+      {
+        "ticker": "GME",
+        "mentions": 1,
+        "mentionTimes": [
+          1777778610
+        ],
+        "avgUpvotes": 3200,
+        "postIds": [
+          "mock6"
+        ],
+        "subreddits": [
+          "wallstreetbets"
+        ]
+      },
+      {
+        "ticker": "GOOG",
+        "mentions": 1,
+        "mentionTimes": [
+          1777770510
+        ],
+        "avgUpvotes": 445,
+        "postIds": [
+          "mock10"
+        ],
+        "subreddits": [
+          "investing"
+        ]
+      },
+      {
+        "ticker": "IBIT",
+        "mentions": 1,
+        "mentionTimes": [
+          1777774110
+        ],
+        "avgUpvotes": 289,
+        "postIds": [
+          "mock7"
+        ],
+        "subreddits": [
+          "investing"
+        ]
+      },
+      {
+        "ticker": "IEF",
+        "mentions": 1,
+        "mentionTimes": [
+          1777772310
+        ],
+        "avgUpvotes": 312,
+        "postIds": [
+          "mock4"
+        ],
+        "subreddits": [
+          "investing"
+        ]
+      },
+      {
+        "ticker": "MSTR",
+        "mentions": 1,
+        "mentionTimes": [
+          1777774110
+        ],
+        "avgUpvotes": 289,
+        "postIds": [
+          "mock7"
+        ],
+        "subreddits": [
+          "investing"
+        ]
+      },
+      {
+        "ticker": "PLTR",
+        "mentions": 1,
+        "mentionTimes": [
+          1777778310
+        ],
+        "avgUpvotes": 891,
+        "postIds": [
+          "mock9"
+        ],
+        "subreddits": [
+          "wallstreetbets"
+        ]
+      },
+      {
+        "ticker": "TLT",
+        "mentions": 1,
+        "mentionTimes": [
+          1777772310
+        ],
+        "avgUpvotes": 312,
+        "postIds": [
+          "mock4"
+        ],
+        "subreddits": [
+          "investing"
+        ]
+      },
+      {
+        "ticker": "URA",
+        "mentions": 1,
+        "mentionTimes": [
+          1777777110
+        ],
+        "avgUpvotes": 567,
+        "postIds": [
+          "mock5"
+        ],
+        "subreddits": [
+          "stocks"
+        ]
+      },
+      {
+        "ticker": "ZROZ",
+        "mentions": 1,
+        "mentionTimes": [
+          1777772310
+        ],
+        "avgUpvotes": 312,
+        "postIds": [
+          "mock4"
+        ],
+        "subreddits": [
+          "investing"
+        ]
+      }
+    ],
+    "meta": {
+      "subreddits": [],
+      "themes": [
+        "AI",
+        "interest rates",
+        "crypto",
+        "uranium"
+      ],
+      "hotPosts": 5,
+      "themePosts": 5,
+      "dedupedOut": 0,
+      "perSubreddit": {
+        "wallstreetbets": 4,
+        "stocks": 4,
+        "investing": 4
+      }
+    }
+  }
+]
