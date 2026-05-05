@@ -20,7 +20,8 @@
 import { fetchRedditBatch }                    from "./ingest.js";
 import { normalizePosts }                      from "./normalize.js";
 import { extractFromPosts, KNOWN_TICKERS }     from "./extract.js";
-import { buildSnapshot, validateSnapshot }     from "./snapshot.js";
+import { buildSnapshot, validateSnapshot,
+         enrichSnapshot }                    from "./snapshot.js";
 import { saveSnapshot }                        from "./snapshotStore.js";
 import { aggregateTickers }                    from "./aggregate.js";
 import { prioritizeSignals,
@@ -29,6 +30,8 @@ import { getEdgeStats, clearEdgeLog }          from "./edgeLog.js";
 import { getMockBatch }                        from "./mockData.js";
 import { analyzeSignals, mergeAnalysis }       from "./analyze.js";
 import { buildShortlist, summarizeShortlist }  from "./shortlist.js";
+import { recordSignals }                        from "./evaluationStore.js";
+import { recordPipelineRun }                    from "./memoryStore.js";
 
 // ─── PipelineResult schema ────────────────────────────────────────────────────
 //
@@ -172,7 +175,7 @@ export async function runDiscoveryPipeline(options = {}) {
       console.warn(`[pipeline:snapshot] ${violations.length} validation warnings:`, violations);
     }
 
-    saveSnapshot(snapshot);
+    // saveSnapshot() deferred — snapshot will be enriched after later stages
 
     stages.snapshot = {
       snapshotId:  snapshot.snapshotId,
@@ -244,6 +247,19 @@ export async function runDiscoveryPipeline(options = {}) {
       shortlistResult = buildShortlist(signals, { maxCandidates: cfg.maxCandidates });
       stages.shortlist = shortlistResult.stats;
       console.log(summarizeShortlist(shortlistResult));
+      // Record all shortlisted candidates for later evaluation
+      recordSignals(shortlistResult.candidates, snapshot.snapshotId);
+
+    // Enrich snapshot with all stage outputs, then save (immutable after this point)
+    enrichSnapshot(snapshot, {
+      tickersRanked:      ranked,
+      tickersShortlisted: shortlistResult?.candidates ?? null,
+      aiAnalysis:         signals
+        .filter(s => s.analysis)
+        .map(s => s.analysis),
+      themes: cfg.themes,
+    });
+    saveSnapshot(snapshot);
     } else {
       stages.shortlist = { skipped: true };
     }
@@ -266,7 +282,14 @@ export async function runDiscoveryPipeline(options = {}) {
       edgeCases:     getEdgeStats(),
     };
 
-    console.log(`[pipeline] Run ${runId} complete — ${finalCandidates.length} candidates, top: ${summary.topTicker} (${summary.topScore}) in ${summary.durationMs}ms`);
+    // Record completed run in memory store for history queries
+    recordPipelineRun({
+      success: true, error: null,
+      summary, signals, candidates: finalCandidates,
+      meta: { stages }
+    }, cfg);
+
+        console.log(`[pipeline] Run ${runId} complete — ${finalCandidates.length} candidates, top: ${summary.topTicker} (${summary.topScore}) in ${summary.durationMs}ms`);
 
     return {
       success:         true,

@@ -34,15 +34,28 @@ export const WINDOW_OPTIONS = [1, 3, 6, 12, 24]; // valid window sizes
 
 /**
  * @typedef {Object} Snapshot
- * @property {string}         snapshotId    — deterministic hash of postIds + windowStart
- * @property {number}         createdAt     — unix ms when snapshot was built
- * @property {number}         windowStart   — unix ms — earliest post timestamp in window
- * @property {number}         windowEnd     — unix ms — snapshot creation time
- * @property {number}         windowHours   — nominal window size (e.g. 6)
- * @property {number}         postCount     — number of posts included
- * @property {number}         tickerCount   — number of unique tickers found
- * @property {TickerRecord[]} tickers       — aggregated ticker records, sorted by mentions DESC
- * @property {object}         meta          — ingest metadata (subreddits, themes, sources)
+ *
+ * Immutable. Set once at build time; enriched before first save.
+ * Never modified after saveSnapshot() is called.
+ *
+ * Core fields (set at Stage 4 — buildSnapshot):
+ * @property {string}         snapshotId        — deterministic hash of postIds + windowStart
+ * @property {number}         createdAt         — unix ms when snapshot was built
+ * @property {number}         windowStart       — unix ms — earliest post in window
+ * @property {number}         windowEnd         — unix ms — snapshot creation time
+ * @property {number}         windowHours       — nominal window size (e.g. 6)
+ * @property {number}         postCount         — number of posts included
+ * @property {number}         tickerCount       — number of unique tickers found
+ * @property {TickerRecord[]} tickers           — aggregated ticker records, mentions DESC
+ * @property {Post[]}         rawPosts          — every post ingested in this window
+ * @property {object}         meta              — ingest metadata
+ *
+ * Enriched fields (added before save, after later pipeline stages complete):
+ * @property {object[]|null}  tickersRanked      — scored output from prioritize stage
+ * @property {object[]|null}  tickersShortlisted — filtered output from shortlist stage
+ * @property {object[]|null}  aiAnalysis         — Claude interpretations per ticker
+ * @property {string[]}       themes             — themes active in this run
+ * @property {boolean}        enriched           — true once enrichSnapshot() called
  */
 
 // ─── Builder ──────────────────────────────────────────────────────────────────
@@ -167,6 +180,22 @@ export function buildSnapshot({
 
   // ── Assemble ───────────────────────────────────────────────────────────────
 
+  // rawPosts: all posts that fell within the window, serialized compactly.
+  // Stored for debugging and backtesting. Body truncated to 500 chars to cap size.
+  const rawPosts = posts
+    .filter(p => windowPostIds.has(p.id))
+    .map(p => ({
+      id:          p.id,
+      subreddit:   p.subreddit,
+      title:       p.title,
+      body:        p.body?.slice(0, 500) ?? "",
+      upvotes:     p.upvotes,
+      numComments: p.numComments,
+      createdUtc:  p.createdUtc,
+      source:      p.source,
+      theme:       p.theme ?? null,
+    }));
+
   return {
     snapshotId,
     createdAt,
@@ -176,6 +205,13 @@ export function buildSnapshot({
     postCount:   windowPostIds.size,
     tickerCount: tickerRecords.length,
     tickers:     tickerRecords,
+    rawPosts,
+    // Enriched fields — populated by enrichSnapshot() before saveSnapshot()
+    themes:              ingestMeta.themeSearch?.themes ?? [],
+    tickersRanked:       null,
+    tickersShortlisted:  null,
+    aiAnalysis:          null,
+    enriched:            false,
     meta: {
       subreddits:   ingestMeta.subreddits   ?? [],
       themes:       ingestMeta.themeSearch?.themes ?? [],
@@ -187,6 +223,73 @@ export function buildSnapshot({
   };
 }
 
+
+// ─── Enrichment ───────────────────────────────────────────────────────────────
+//
+// Called in the runner AFTER stages 6–8 complete, BEFORE saveSnapshot().
+// This is the one permitted mutation to a snapshot — it must happen before
+// the first write to disk. After enrichSnapshot() the snapshot is complete
+// and immutable.
+
+/**
+ * Enrich a snapshot with later pipeline stage outputs.
+ * Must be called exactly once, before saveSnapshot().
+ *
+ * @param {Snapshot}      snapshot
+ * @param {object}        enrichment
+ * @param {object[]|null} enrichment.tickersRanked      — from prioritizeSignals()
+ * @param {object[]|null} enrichment.tickersShortlisted — from buildShortlist().candidates
+ * @param {object[]|null} enrichment.aiAnalysis         — from analyzeSignals()
+ * @param {string[]}      enrichment.themes             — active themes this run
+ * @returns {Snapshot} same object, mutated
+ */
+export function enrichSnapshot(snapshot, {
+  tickersRanked      = null,
+  tickersShortlisted = null,
+  aiAnalysis         = null,
+  themes             = [],
+} = {}) {
+  if (snapshot.enriched) {
+    console.warn(`[snapshot] enrichSnapshot() called twice on ${snapshot.snapshotId} — skipping`);
+    return snapshot;
+  }
+
+  snapshot.tickersRanked = tickersRanked
+    ? tickersRanked.map(r => ({
+        ticker:             r.ticker,
+        finalScore:         r.finalScore,
+        baseScore:          r.baseScore,
+        concentrationScore: r.concentrationScore,
+        consistencyScore:   r.consistencyScore,
+        qualityScore:       r.qualityScore,
+        penaltyAdjustment:  r.penaltyAdjustment,
+        mentions:           r.mentions,
+        velocity:           r.velocity,
+      }))
+    : null;
+
+  snapshot.tickersShortlisted = tickersShortlisted
+    ? tickersShortlisted.map(c => ({
+        ticker:           c.ticker,
+        adjustedScore:    c.adjustedScore,
+        signalType:       c.signalType,
+        confidence:       c.confidence,
+        narrativeSummary: c.narrativeSummary ?? null,
+        keyCatalyst:      c.keyCatalyst      ?? null,
+        keyRisk:          c.keyRisk          ?? null,
+        mentions:         c.mentions,
+        velocity:         c.velocity,
+        appliedRules:     c.appliedRules     ?? [],
+      }))
+    : null;
+
+  snapshot.aiAnalysis = aiAnalysis ?? null;
+  snapshot.themes     = themes;
+  snapshot.enriched   = true;
+
+  return snapshot;
+}
+
 // ─── Validator ────────────────────────────────────────────────────────────────
 
 /**
@@ -194,9 +297,11 @@ export function buildSnapshot({
  * Returns an array of violation strings. Empty = valid.
  *
  * @param {Snapshot} snapshot
+ * @param {object}   options
+ * @param {boolean}  options.requireEnriched — warn if enrichSnapshot() not yet called
  * @returns {string[]}
  */
-export function validateSnapshot(snapshot) {
+export function validateSnapshot(snapshot, { requireEnriched = false } = {}) {
   const errors = [];
 
   if (!snapshot.snapshotId || snapshot.snapshotId.length !== 16) {
@@ -209,6 +314,14 @@ export function validateSnapshot(snapshot) {
 
   if (!WINDOW_OPTIONS.includes(snapshot.windowHours)) {
     errors.push(`windowHours must be one of: ${WINDOW_OPTIONS.join(", ")}`);
+  }
+
+  if (!Array.isArray(snapshot.rawPosts)) {
+    errors.push("rawPosts must be an array");
+  }
+
+  if (requireEnriched && !snapshot.enriched) {
+    errors.push("snapshot not enriched — call enrichSnapshot() before saving");
   }
 
   if (!Array.isArray(snapshot.tickers)) {
