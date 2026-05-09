@@ -11,7 +11,9 @@
 // Usage:    import "@/lib/scheduler/scheduler";  ← in server entry (e.g. server.js)
 
 import cron from "node-cron";
-import { runPipeline } from "@/lib/pipeline/runner";
+import { runPipeline }              from "@/lib/pipeline/runner";
+import { runPendingEvaluations }    from "@/lib/pipeline/evaluate";
+import { runFeedbackCycle }          from "@/lib/pipeline/feedback";
 import { appendRunLog, getSchedulerState, setSchedulerState } from "./schedulerState";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
@@ -95,6 +97,26 @@ async function runDiscoveryPipeline() {
       `${log.candidates} candidates, top: ${log.topTicker} (${log.topScore}) ` +
       `in ${log.durationMs}ms`
     );
+
+    // Run pending evaluations after each pipeline batch — fire and forget.
+    // Evaluations that are not yet due are skipped silently.
+    for (const window of ["24h", "72h"]) {
+      runPendingEvaluations(window).catch(e =>
+        console.warn(`[scheduler] Evaluation (${window}) failed:`, e.message)
+      );
+    }
+
+    // Run feedback cycle once daily (at the first run after midnight UTC).
+    // Generates learning recommendations — never auto-applies weight changes.
+    const hourUTC = new Date().getUTCHours();
+    if (hourUTC === 0) {
+      try {
+        const lr = runFeedbackCycle();
+        console.log(`[scheduler] Feedback cycle complete — status: ${lr.status}, recs: ${lr.recommendations?.length ?? 0}`);
+      } catch (e) {
+        console.warn("[scheduler] Feedback cycle failed:", e.message);
+      }
+    }
 
   } catch (err) {
     const state = getSchedulerState();
