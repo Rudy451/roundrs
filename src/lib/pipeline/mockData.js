@@ -6,8 +6,8 @@
 // Single source of truth — imported by runner.js and any test that needs
 // realistic pipeline input without hitting Reddit.
 
-export function getMockBatch() {
-  const now = Math.floor(Date.now() / 1000);
+export function getMockBatch({ nowMs = Date.now() } = {}) {
+  const now = Math.floor(nowMs / 1000);
 
   const posts = [
     {
@@ -81,7 +81,7 @@ export function getMockBatch() {
       { theme: "uranium",        query: "uranium nuclear energy stocks", posts: posts.filter(p => p.theme === "uranium") },
     ],
     meta: {
-      timestamp:    Date.now(),
+      timestamp:    nowMs,
       durationMs:   0,
       totalPosts:   posts.length,
       hotPosts:     5,

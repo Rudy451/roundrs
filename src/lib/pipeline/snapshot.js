@@ -82,8 +82,9 @@ export function buildSnapshot({
   extracted,
   windowHours = DEFAULT_WINDOW_HOURS,
   ingestMeta  = {},
+  nowMs       = Date.now(),
 }) {
-  const createdAt    = Date.now();
+  const createdAt    = nowMs;
   const windowEnd    = createdAt;
   const windowStartS = Math.floor(windowEnd / 1000) - windowHours * 3600; // in seconds
   const windowStart  = windowStartS * 1000; // in ms for storage

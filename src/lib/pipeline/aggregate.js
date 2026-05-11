@@ -9,8 +9,6 @@
 //   post.createdUtc  (not post.created_utc)
 //   post.numComments (not post.num_comments)
 
-import { getLatestSnapshot } from "./snapshotStore.js";
-
 // ─── Velocity classification ──────────────────────────────────────────────────
 
 /**
@@ -22,9 +20,9 @@ import { getLatestSnapshot } from "./snapshotStore.js";
  * @param {Post[]}   posts           — posts in which this ticker appears
  * @returns {"low" | "medium" | "high"}
  */
-function classifyVelocity(ticker, currentMentions, posts) {
+function classifyVelocity(ticker, currentMentions, posts, { nowMs = Date.now(), historySnapshots } = {}) {
   // Primary strategy: compare to previous snapshot
-  const prev = getLatestSnapshot();
+  const prev = historySnapshots?.[0] ?? null;
 
   if (prev) {
     const prevRecord = prev.tickers.find(t => t.ticker === ticker);
@@ -42,7 +40,7 @@ function classifyVelocity(ticker, currentMentions, posts) {
   }
 
   // Fallback: recency clustering (no snapshot history yet)
-  const nowS         = Math.floor(Date.now() / 1000);
+  const nowS         = Math.floor(nowMs / 1000);
   const twoHoursAgoS = nowS - 2 * 60 * 60;
   const recentCount  = posts.filter(p => p.createdUtc >= twoHoursAgoS).length;
 
@@ -65,7 +63,7 @@ function classifyVelocity(ticker, currentMentions, posts) {
  * @param {number} options.topN — max signals to return (default 20)
  * @returns {TickerSignal[]}
  */
-export function aggregateTickers(extracted, { topN = 20 } = {}) {
+export function aggregateTickers(extracted, { topN = 20, nowMs = Date.now(), historySnapshots } = {}) {
   // Build map: ticker → { postSet, posts[] }
   // postSet prevents double-counting if the same post appears twice in extracted
   const map = new Map();
@@ -98,12 +96,15 @@ export function aggregateTickers(extracted, { topN = 20 } = {}) {
   // Enrich with velocity and sample posts
   return sorted.map(({ ticker, posts }) => {
     const mentions  = posts.length;
-    const velocity  = classifyVelocity(ticker, mentions, posts);
+    const velocity  = classifyVelocity(ticker, mentions, posts, { nowMs, historySnapshots });
 
     // Sample posts: highest upvotes first, max 3
     // Uses canonical post.upvotes field
     const samplePosts = [...posts]
-      .sort((a, b) => b.upvotes - a.upvotes)
+      .sort((a, b) => {
+        if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes;
+        return a.id.localeCompare(b.id);
+      })
       .slice(0, 3)
       .map(p => ({
         id:          p.id,
@@ -130,7 +131,7 @@ export function aggregateTickers(extracted, { topN = 20 } = {}) {
     // Scoring stage receives these values — not the raw posts.
 
     // Subreddit spread: distinct subreddits mentioning this ticker
-    const uniqueSubreddits = [...new Set(posts.map(p => p.subreddit))];
+    const uniqueSubreddits = [...new Set(posts.map(p => p.subreddit))].sort();
 
     // Mention timestamps (seconds, sorted ASC): used for consistency scoring
     const mentionTimes = posts.map(p => p.createdUtc).sort((a, b) => a - b);

@@ -1,3 +1,34 @@
+const DEFAULT_STATE = {
+  active: false,
+  isRunning: false,
+  startedAt: null,
+  lastRunId: null,
+  lastRunStartedAt: null,
+  lastSuccessAt: null,
+  lastErrorAt: null,
+  lastError: null,
+  lastResult: null,
+  consecutiveErrors: 0,
+};
+
+let _state = { ...DEFAULT_STATE };
+let _runLog = [];
+
+export function getSchedulerState() {
+  return { ..._state };
+}
+
+export function setSchedulerState(patch = {}) {
+  _state = { ..._state, ...patch };
+  return getSchedulerState();
+}
+
+export function appendRunLog(entry) {
+  _runLog.unshift(entry);
+  _runLog = _runLog.slice(0, 100);
+  return entry;
+}
+
 export function getRunLog(limit = 50) {
   return _runLog.slice(0, limit);
 }

@@ -22,7 +22,7 @@ import { normalizePosts }                      from "./normalize.js";
 import { extractFromPosts, KNOWN_TICKERS }     from "./extract.js";
 import { buildSnapshot, validateSnapshot,
          enrichSnapshot }                    from "./snapshot.js";
-import { saveSnapshot }                        from "./snapshotStore.js";
+import { saveSnapshot, getSnapshots }          from "./snapshotStore.js";
 import { aggregateTickers }                    from "./aggregate.js";
 import { prioritizeSignals,
          summarizePrioritization }             from "./prioritize.js";
@@ -70,8 +70,10 @@ const DEFAULTS = {
   themeScores:     {},
   analyze:         true,   // run AI analysis stage (stage 7) — set false to skip
   analyzeTopN:     10,     // how many top tickers to send for analysis
+  analyzeTimeoutMs: 12_000,
   shortlist:       true,   // apply shortlist filter after analysis (stage 8)
   maxCandidates:   10,     // max candidates in shortlist output
+  nowMs:           null,   // optional fixed run clock for deterministic execution/tests
 };
 
 // ─── Entry point ──────────────────────────────────────────────────────────────
@@ -95,8 +97,10 @@ const DEFAULTS = {
  */
 export async function runDiscoveryPipeline(options = {}) {
   const cfg       = { ...DEFAULTS, ...options };
-  const runId     = `run_${Date.now()}`;
-  const startTime = Date.now();
+  const runAtMs   = cfg.nowMs ?? Date.now();
+  const fixedTime = cfg.nowMs != null;
+  const runId     = `run_${runAtMs}`;
+  const startTime = fixedTime ? runAtMs : Date.now();
   const stages    = {};
 
   clearEdgeLog();
@@ -110,7 +114,7 @@ export async function runDiscoveryPipeline(options = {}) {
     let posts, ingestMeta, themedBatches;
 
     if (cfg.dryRun) {
-      ({ posts, themedBatches, meta: ingestMeta } = getMockBatch());
+      ({ posts, themedBatches, meta: ingestMeta } = getMockBatch({ nowMs: runAtMs }));
       console.log(`[pipeline:ingest] dry run — ${posts.length} mock posts`);
     } else {
       ({ posts, themedBatches, meta: ingestMeta } = await fetchRedditBatch({
@@ -131,7 +135,7 @@ export async function runDiscoveryPipeline(options = {}) {
 
     if (posts.length === 0) {
       console.warn("[pipeline:ingest] No posts fetched — aborting run");
-      return failResult(runId, startTime, stages, "No posts fetched — Reddit may be rate-limiting. Try dryRun:true.");
+      return failResult(runId, startTime, stages, "No posts fetched — Reddit may be rate-limiting. Try dryRun:true.", fixedTime);
     }
 
     // ── Stage 2: Normalize ───────────────────────────────────────────────────
@@ -147,7 +151,7 @@ export async function runDiscoveryPipeline(options = {}) {
     console.log(`[pipeline:normalize] ${normalized.length}/${posts.length} posts passed quality filter`);
 
     if (normalized.length === 0) {
-      return failResult(runId, startTime, stages, "All posts filtered — check quality thresholds");
+      return failResult(runId, startTime, stages, "All posts filtered — check quality thresholds", fixedTime);
     }
 
     // ── Stage 3: Extract ─────────────────────────────────────────────────────
@@ -168,7 +172,7 @@ export async function runDiscoveryPipeline(options = {}) {
 
     // ── Stage 4: Snapshot ────────────────────────────────────────────────────
 
-    const snapshot   = buildSnapshot({ posts, extracted, windowHours: cfg.windowHours, ingestMeta });
+    const snapshot   = buildSnapshot({ posts, extracted, windowHours: cfg.windowHours, ingestMeta, nowMs: runAtMs });
     const violations = validateSnapshot(snapshot);
 
     if (violations.length > 0) {
@@ -189,7 +193,12 @@ export async function runDiscoveryPipeline(options = {}) {
 
     // ── Stage 5: Aggregate ───────────────────────────────────────────────────
 
-    const aggregated = aggregateTickers(extracted, { topN: cfg.topN });
+    const historySnapshots = cfg.dryRun ? [] : getSnapshots({ limit: 3, windowHours: cfg.windowHours });
+    const aggregated = aggregateTickers(extracted, {
+      topN: cfg.topN,
+      nowMs: runAtMs,
+      historySnapshots,
+    });
 
     stages.aggregate = {
       candidates: aggregated.length,
@@ -200,7 +209,11 @@ export async function runDiscoveryPipeline(options = {}) {
 
     // ── Stage 6: Prioritize ──────────────────────────────────────────────────────────
 
-    const ranked     = prioritizeSignals(aggregated, cfg.themeScores);
+    const ranked     = prioritizeSignals(aggregated, cfg.themeScores, {
+      nowMs: runAtMs,
+      windowHours: cfg.windowHours,
+      historySnapshots,
+    });
     const priSummary = summarizePrioritization(ranked);
 
     stages.prioritize = priSummary;
@@ -216,7 +229,11 @@ export async function runDiscoveryPipeline(options = {}) {
 
     if (cfg.analyze && ranked.length > 0) {
       try {
-        const analyses = await analyzeSignals(ranked, { topN: cfg.analyzeTopN });
+        const analyses = await analyzeSignals(ranked, {
+          topN: cfg.analyzeTopN,
+          timeoutMs: cfg.analyzeTimeoutMs,
+          nowMs: runAtMs,
+        });
         signals = mergeAnalysis(ranked, analyses);
 
         const aiCount  = analyses.filter(a => a.source === "claude").length;
@@ -249,20 +266,29 @@ export async function runDiscoveryPipeline(options = {}) {
       console.log(summarizeShortlist(shortlistResult));
       // Record all shortlisted candidates for later evaluation
       recordSignals(shortlistResult.candidates, snapshot.snapshotId);
+    } else {
+      stages.shortlist = { skipped: true };
+    }
 
-    // Enrich snapshot with all stage outputs, then save (immutable after this point)
+    // Enrich snapshot with all stage outputs, then save (immutable after this point).
+    // Successful runs must leave a complete audit snapshot even when shortlist is
+    // disabled or filters remove every candidate.
     enrichSnapshot(snapshot, {
       tickersRanked:      ranked,
-      tickersShortlisted: shortlistResult?.candidates ?? null,
+      tickersShortlisted: shortlistResult?.candidates ?? [],
       aiAnalysis:         signals
         .filter(s => s.analysis)
         .map(s => s.analysis),
       themes: cfg.themes,
     });
-    saveSnapshot(snapshot);
-    } else {
-      stages.shortlist = { skipped: true };
+
+    const enrichedViolations = validateSnapshot(snapshot, { requireEnriched: true });
+    if (enrichedViolations.length > 0) {
+      console.warn(`[pipeline:snapshot] enriched validation warnings:`, enrichedViolations);
+      stages.snapshot.violations += enrichedViolations.length;
     }
+
+    saveSnapshot(snapshot);
 
     const finalCandidates = shortlistResult?.candidates ?? [];
 
@@ -270,8 +296,8 @@ export async function runDiscoveryPipeline(options = {}) {
 
     const summary = {
       runId,
-      timestamp:     Date.now(),
-      durationMs:    Date.now() - startTime,
+      timestamp:     runAtMs,
+      durationMs:    fixedTime ? 0 : Date.now() - startTime,
       postsIngested: posts.length,
       postsFiltered: posts.length - normalized.length,
       uniqueTickers: uniqueTickers.size,
@@ -303,13 +329,15 @@ export async function runDiscoveryPipeline(options = {}) {
     };
   } catch (err) {
     console.error(`[pipeline] Run ${runId} failed:`, err);
-    return failResult(runId, startTime, stages, err.message);
+    return failResult(runId, startTime, stages, err.message, fixedTime);
   }
 }
 
 // ─── Fail result factory ──────────────────────────────────────────────────────
 
-function failResult(runId, startTime, stages, errorMessage) {
+function failResult(runId, startTime, stages, errorMessage, fixedTime = false) {
+  const timestamp = fixedTime ? startTime : Date.now();
+
   return {
     success:  false,
     error:    errorMessage,
@@ -317,8 +345,8 @@ function failResult(runId, startTime, stages, errorMessage) {
     snapshot: null,
     summary: {
       runId,
-      timestamp:     Date.now(),
-      durationMs:    Date.now() - startTime,
+      timestamp,
+      durationMs:    fixedTime ? 0 : Date.now() - startTime,
       postsIngested: stages.ingest?.postCount ?? 0,
       postsFiltered: 0,
       uniqueTickers: 0,

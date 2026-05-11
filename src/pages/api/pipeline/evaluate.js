@@ -29,11 +29,12 @@ import {
   markEvaluated,
   saveEvaluation,
   getAccuracyStats,
-} from "./evaluationStore.js";
+  getSignalRecord,
+} from "@/lib/pipeline/evaluationStore";
 
 import {
   getSnapshotsInRange,
-} from "./snapshotStore.js";
+} from "@/lib/pipeline/snapshotStore";
 
 // ─── Evaluation config ────────────────────────────────────────────────────────
 
@@ -293,7 +294,6 @@ export async function runPendingEvaluations(window = "24h") {
  * @returns {EvaluationResult|null}
  */
 export function evaluateOne(recordId, window = "24h") {
-  const { getSignalRecord } = require("./evaluationStore.js");
   const record = getSignalRecord(recordId);
   if (!record) return null;
   return evaluateRecord(record, window);

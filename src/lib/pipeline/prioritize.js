@@ -15,8 +15,6 @@
 // All intermediate scores are [0, 100].
 // final_score is clamped to [0, 100].
 
-import { getSnapshots } from "./snapshotStore.js";
-
 // ─── Weight config ────────────────────────────────────────────────────────────
 //
 // BASE WEIGHTS (sum to 1.0 — controls base_score composition)
@@ -56,7 +54,7 @@ function mentionsScore(mentions, maxMentions) {
   return (mentions / maxMentions) * 100;
 }
 
-function velocityScore(signal, history) {
+function velocityScore(signal, history, nowMs = Date.now()) {
   const current = signal.mentions;
 
   if (history.length >= 1) {
@@ -73,7 +71,7 @@ function velocityScore(signal, history) {
   }
 
   const times      = signal.mentionTimes ?? [];
-  const nowS       = Math.floor(Date.now() / 1000);
+  const nowS       = Math.floor(nowMs / 1000);
   const last2h     = times.filter(t => t >= nowS - 7200).length;
   const last6h     = times.filter(t => t >= nowS - 21600).length;
   if (last6h === 0) return 25;
@@ -170,11 +168,11 @@ function concentrationScore(uniqueSubreddits, postCount, samplePosts) {
  * @param {number}   windowHours  — nominal window size
  * @returns {number} 0–100
  */
-function consistencyScore(mentionTimes, windowHours = 6) {
+function consistencyScore(mentionTimes, windowHours = 6, nowMs = Date.now()) {
   if (!mentionTimes || mentionTimes.length === 0) return 50; // no data, neutral
   if (mentionTimes.length === 1) return 25; // single mention, low consistency
 
-  const nowS        = Math.floor(Date.now() / 1000);
+  const nowS        = Math.floor(nowMs / 1000);
   const windowStart = nowS - windowHours * 3600;
   const windowSize  = windowHours * 3600;
   const bucketSize  = windowSize / 3;
@@ -351,17 +349,21 @@ function round1(n) { return Math.round(n * 10) / 10; }
  * @param {object}         themeScores — { theme: 0–100 }
  * @returns {RankedTickerV2[]}
  */
-export function prioritizeSignals(signals, themeScores = {}) {
+export function prioritizeSignals(signals, themeScores = {}, {
+  nowMs = Date.now(),
+  windowHours = 6,
+  historySnapshots,
+} = {}) {
   if (!signals || signals.length === 0) return [];
 
-  const history     = getSnapshots({ limit: 3 });
+  const history     = historySnapshots ?? [];
   const maxMentions = Math.max(...signals.map(s => s.mentions), 1);
 
   const scored = signals.map(signal => {
 
     // ── Base score (v1 components) ─────────────────────────────────────────
     const mScore   = mentionsScore(signal.mentions, maxMentions);
-    const vScore   = velocityScore(signal, history);
+    const vScore   = velocityScore(signal, history, nowMs);
     const tScore   = themeScore(signal, themeScores);
     const baseScore = round1(
       mScore * BASE_WEIGHTS.mentions +
@@ -378,7 +380,8 @@ export function prioritizeSignals(signals, themeScores = {}) {
 
     const consScore = consistencyScore(
       signal.mentionTimes ?? [],
-      6 // default to 6h window
+      windowHours,
+      nowMs
     );
 
     const qualScore = qualityScore(

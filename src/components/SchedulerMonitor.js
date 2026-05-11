@@ -39,7 +39,7 @@ function useScheduler() {
   const [running,  setRunning]  = useState(false);
   const [active,   setActive]   = useState(true);
   const [msToNext, setMsToNext] = useState(INTERVAL_MS);
-  const nextRef = useRef(Date.now() + INTERVAL_MS);
+  const nextRef = useRef(null);
 
   const executeRun = useCallback(async () => {
     if (running || !active) return;
@@ -64,6 +64,10 @@ function useScheduler() {
   }, [running, active]);
 
   useEffect(() => {
+    if (nextRef.current == null) {
+      nextRef.current = Date.now() + INTERVAL_MS;
+    }
+
     const id = setInterval(() => {
       const now  = Date.now();
       const left = nextRef.current - now;

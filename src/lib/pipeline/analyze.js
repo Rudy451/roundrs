@@ -73,9 +73,9 @@ OUTPUT: Return ONLY a valid JSON array. No markdown, no backticks, no preamble.
  * @param {RankedTicker} signal
  * @returns {string}
  */
-function formatSignalForPrompt(signal) {
+function formatSignalForPrompt(signal, nowMs = Date.now()) {
   const posts = (signal.samplePosts ?? []).map((p, i) => {
-    const age    = Math.round((Date.now() / 1000 - p.createdUtc) / 3600);
+    const age    = Math.round((nowMs / 1000 - p.createdUtc) / 3600);
     const body   = p.bodyPreview?.trim() || "(no body)";
     const source = p.theme ? `r/${p.subreddit} via theme:${p.theme}` : `r/${p.subreddit}`;
     return (
@@ -156,6 +156,7 @@ function deterministicAnalysis(signal) {
 export async function analyzeSignals(signals, {
   topN      = 10,
   timeoutMs = 12_000,
+  nowMs     = Date.now(),
 } = {}) {
   if (!signals || signals.length === 0) return [];
 
@@ -163,7 +164,7 @@ export async function analyzeSignals(signals, {
 
   // ── Build prompt ───────────────────────────────────────────────────────────
 
-  const evidenceBlocks = targets.map(formatSignalForPrompt).join("\n\n---\n\n");
+  const evidenceBlocks = targets.map(signal => formatSignalForPrompt(signal, nowMs)).join("\n\n---\n\n");
 
   const userMessage =
     `Analyze these ${targets.length} ticker signals from the current pipeline run.\n\n` +

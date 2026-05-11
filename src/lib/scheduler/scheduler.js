@@ -10,7 +10,6 @@
 // Install:  npm install node-cron
 // Usage:    import "@/lib/scheduler/scheduler";  ← in server entry (e.g. server.js)
 
-import cron from "node-cron";
 import { runPipeline }              from "@/lib/pipeline/runner";
 import { runPendingEvaluations }    from "@/lib/pipeline/evaluate";
 import { runFeedbackCycle }          from "@/lib/pipeline/feedback";
@@ -38,6 +37,13 @@ export const SCHEDULER_CONFIG = {
 // ─── State ────────────────────────────────────────────────────────────────────
 
 let cronTask = null;
+
+function intervalFromCronExpression(expression) {
+  const match = expression.match(/^\*\/(\d+) \* \* \* \*$/);
+  if (!match) return null;
+  const minutes = Number(match[1]);
+  return Number.isFinite(minutes) && minutes > 0 ? minutes * 60 * 1000 : null;
+}
 
 // ─── Core job ─────────────────────────────────────────────────────────────────
 
@@ -161,14 +167,17 @@ export function startScheduler() {
     return;
   }
 
-  if (!cron.validate(SCHEDULER_CONFIG.cronExpression)) {
+  const intervalMs = intervalFromCronExpression(SCHEDULER_CONFIG.cronExpression);
+  if (!intervalMs) {
     throw new Error(`[scheduler] Invalid cron expression: ${SCHEDULER_CONFIG.cronExpression}`);
   }
 
-  cronTask = cron.schedule(SCHEDULER_CONFIG.cronExpression, runDiscoveryPipeline, {
-    scheduled: true,
-    timezone:  "America/New_York", // Market timezone
-  });
+  const intervalId = setInterval(runDiscoveryPipeline, intervalMs);
+  cronTask = {
+    stop() {
+      clearInterval(intervalId);
+    },
+  };
 
   setSchedulerState({ active: true, startedAt: Date.now() });
   console.log(`[scheduler] Started — running every ${SCHEDULER_CONFIG.intervalLabel} (${SCHEDULER_CONFIG.cronExpression})`);
