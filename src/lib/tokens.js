@@ -258,4 +258,6 @@ export function scoreTier(score) {
 // Named re-exports for destructured imports:
 //   import { C, T, SP, R, scoreColor, signalColor, stateColor, scoreArc } from "@/lib/tokens";
 
-export default { C, T, SP, R, scoreColor, signalColor, stateColor, scoreArc, velocityLabel, scoreTier };
+const tokens = { C, T, SP, R, scoreColor, signalColor, stateColor, scoreArc, velocityLabel, scoreTier };
+
+export default tokens;

@@ -246,7 +246,8 @@ export async function analyzeSignals(signals, {
     //
     // This prevents a degraded Claude API from producing a systematically
     // worse shortlist on every degraded run.
-    const fallbackSource = err.name === "AbortError"
+    const transientFailure = err.name === "AbortError" || err.message === "fetch failed";
+    const fallbackSource = transientFailure
       ? "claude_timeout_fallback"
       : "deterministic_fallback";
 

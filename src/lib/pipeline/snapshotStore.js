@@ -26,6 +26,7 @@ import path from "path";
 // 200 provides ~100h of history with headroom.
 const MAX_SNAPSHOTS        = 200;
 const PIPELINE_CADENCE_MS  = 30 * 60 * 1000; // 30 minutes in ms
+export const EXPECTED_SNAPSHOT_CAPACITY = MAX_SNAPSHOTS;
 
 // How long snapshot data is retained in the ring buffer, in milliseconds.
 // Derived from MAX_SNAPSHOTS × cadence so evaluationStore.js can compare
@@ -33,6 +34,7 @@ const PIPELINE_CADENCE_MS  = 30 * 60 * 1000; // 30 minutes in ms
 // snapshots are still available.
 // At 200 snapshots × 30min = 6000 min = 100 hours.
 export const SNAPSHOT_RETENTION_MS = MAX_SNAPSHOTS * PIPELINE_CADENCE_MS;
+export const SNAPSHOT_RETENTION_HOURS = SNAPSHOT_RETENTION_MS / (60 * 60 * 1000);
 
 const DATA_DIR  = path.join(process.cwd(), ".data");
 const STORE_FILE = path.join(DATA_DIR, "snapshots.json");
