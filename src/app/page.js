@@ -38,13 +38,35 @@ const NAV = [
   },
 ];
 
+// Descriptions updated per audit recommendation:
+// DraftBoard surfaces what Reddit is discussing in investment terms, scored and
+// filtered for quality. It is a structured feed of retail discussion activity,
+// not a novel signal discovery engine. Descriptions reflect this accurately.
 const VIEW_META = {
-  market:       { title: "Live signals",       desc: "Price and Reddit attention per ticker"           },
-  discovery:    { title: "Discovery",          desc: "Extract and rank signals from Reddit text"       },
-  pipeline:     { title: "Pipeline",           desc: "Automated ingestion, extraction, and ranking"   },
-  intelligence: { title: "Theme intelligence", desc: "Score themes by investable attention value"     },
-  workbench:    { title: "Theme workbench",    desc: "Expand themes into targeted search queries"     },
-  scheduler:    { title: "Scheduler",          desc: "Automated 30-minute pipeline runs"              },
+  market:       {
+    title: "Live signals",
+    desc:  "Scored Reddit discussion activity — top-mentioned tickers by attention quality",
+  },
+  discovery:    {
+    title: "Discovery",
+    desc:  "Extract and rank signals from Reddit text · surfaces what is being discussed, not undiscovered ideas",
+  },
+  pipeline:     {
+    title: "Pipeline",
+    desc:  "Automated ingestion, scoring, and filtering of retail investment discussion",
+  },
+  intelligence: {
+    title: "Theme intelligence",
+    desc:  "Score investment themes by discussion density and ticker mappability",
+  },
+  workbench:    {
+    title: "Theme workbench",
+    desc:  "Expand themes into targeted Reddit search queries",
+  },
+  scheduler:    {
+    title: "Scheduler",
+    desc:  "Automated 30-minute pipeline runs",
+  },
 };
 
 export default function Home() {

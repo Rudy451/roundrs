@@ -8,6 +8,14 @@
 // ─── Inline the pure functions (no store dependency) ─────────────────────────
 
 import { EVAL_CONFIG } from "../evaluate.js";
+import {
+  MAX_EVALUATION_WINDOW_HOURS,
+  assertEvaluationRetentionConfig,
+} from "../evaluationStore.js";
+import {
+  SNAPSHOT_RETENTION_HOURS,
+  EXPECTED_SNAPSHOT_CAPACITY,
+} from "../snapshotStore.js";
 
 function computeAttentionRatio(atSurface, atEval) {
   if (atSurface === 0) return atEval > 0 ? 1.5 : 0;
@@ -78,6 +86,11 @@ function testConfig() {
 
   const wSum = Object.values(EVAL_CONFIG.outcomeWeights).reduce((s, v) => s + v, 0);
   assert(Math.abs(wSum - 1.0) < 0.001, "outcomeWeights sum to 1.0");
+  assert(SNAPSHOT_RETENTION_HOURS >= 96, "snapshot retention is at least 96h");
+  assert(SNAPSHOT_RETENTION_HOURS >= MAX_EVALUATION_WINDOW_HOURS,
+    "snapshot retention covers max evaluation window");
+  assert(EXPECTED_SNAPSHOT_CAPACITY >= 192, "expected snapshot capacity covers 96h at 30m cadence");
+  assertEqual(assertEvaluationRetentionConfig(), undefined, "retention/evaluation guard passes");
 }
 
 function testAttentionRatio() {

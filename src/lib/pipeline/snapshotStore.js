@@ -8,15 +8,34 @@
 //   - Disk persistence: .data/snapshots.json
 //   - Lookup by snapshotId or index (0 = latest)
 //   - Comparable snapshots: getByWindow(hours) returns all with matching windowHours
+//
+// Ring buffer sizing:
+//   MAX_SNAPSHOTS must be large enough to cover the longest evaluation window
+//   (72h) at the pipeline cadence (30min), plus buffer.
+//   72h / 0.5h = 144 snapshots minimum.
+//   200 provides ~100h headroom, reducing the risk of evaluate.js finding
+//   zero snapshots and producing false-noise classifications.
+//   See: evaluate.js data sufficiency guard, EVAL_CONFIG.minSnapshotsForClassification.
 
 import fs   from "fs";
 import path from "path";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
-const MAX_SNAPSHOTS = 96;  // ~48h at 30min cadence with 6h windows
-const DATA_DIR      = path.join(process.cwd(), ".data");
-const STORE_FILE    = path.join(DATA_DIR, "snapshots.json");
+// Must cover the longest evaluation window (72h) at 30min cadence = 144 minimum.
+// 200 provides ~100h of history with headroom.
+const MAX_SNAPSHOTS        = 200;
+const PIPELINE_CADENCE_MS  = 30 * 60 * 1000; // 30 minutes in ms
+
+// How long snapshot data is retained in the ring buffer, in milliseconds.
+// Derived from MAX_SNAPSHOTS × cadence so evaluationStore.js can compare
+// a signal's surfacedAt time against this to know whether its eval-window
+// snapshots are still available.
+// At 200 snapshots × 30min = 6000 min = 100 hours.
+export const SNAPSHOT_RETENTION_MS = MAX_SNAPSHOTS * PIPELINE_CADENCE_MS;
+
+const DATA_DIR  = path.join(process.cwd(), ".data");
+const STORE_FILE = path.join(DATA_DIR, "snapshots.json");
 
 // ─── In-memory ring buffer ────────────────────────────────────────────────────
 
@@ -58,17 +77,14 @@ function persistSnapshots() {
  * @param {Snapshot} snapshot
  */
 export function saveSnapshot(snapshot) {
-  // Dedup — don't store the same snapshot twice
   const exists = _snapshots.some(s => s.snapshotId === snapshot.snapshotId);
   if (exists) {
     console.debug(`[snapshotStore] Snapshot ${snapshot.snapshotId} already exists, skipping`);
     return;
   }
 
-  // Prepend (newest first)
   _snapshots.unshift(snapshot);
 
-  // Enforce ring buffer
   if (_snapshots.length > MAX_SNAPSHOTS) {
     _snapshots = _snapshots.slice(0, MAX_SNAPSHOTS);
   }
@@ -115,7 +131,6 @@ export function getSnapshots({ limit = 10, windowHours } = {}) {
 
 /**
  * Get the previous snapshot relative to a given one.
- * Used for velocity calculations and diffing.
  *
  * @param {string} snapshotId
  * @returns {Snapshot|null}
@@ -123,7 +138,7 @@ export function getSnapshots({ limit = 10, windowHours } = {}) {
 export function getPreviousSnapshot(snapshotId) {
   const idx = _snapshots.findIndex(s => s.snapshotId === snapshotId);
   if (idx === -1 || idx === _snapshots.length - 1) return null;
-  return _snapshots[idx + 1]; // next in array = older in time
+  return _snapshots[idx + 1];
 }
 
 /**
@@ -157,6 +172,8 @@ export function getStoreStats() {
     oldest:          _snapshots[_snapshots.length - 1]?.createdAt ?? null,
     newest:          _snapshots[0]?.createdAt ?? null,
     windowBreakdown,
+    maxSnapshots:    MAX_SNAPSHOTS,
+    hoursOfHistory:  Math.round(_snapshots.length * 0.5 * 10) / 10, // assumes 30min cadence
   };
 }
 

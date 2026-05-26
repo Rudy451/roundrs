@@ -13,11 +13,37 @@
 
 import fs   from "fs";
 import path from "path";
+import {
+  SNAPSHOT_RETENTION_HOURS,
+  SNAPSHOT_RETENTION_MS,
+} from "./snapshotStore.js";
 
 const DATA_DIR         = path.join(process.cwd(), ".data");
 const SIGNALS_FILE     = path.join(DATA_DIR, "signal_records.json");
 const EVALUATIONS_FILE = path.join(DATA_DIR, "evaluations.json");
 const MAX_RECORDS      = 2000; // ring cap per store
+
+export const EVALUATION_WINDOWS = {
+  "24h": 24 * 3600 * 1000,
+  "72h": 72 * 3600 * 1000,
+};
+
+export const DEFAULT_EVAL_WINDOWS = ["24h", "72h"];
+export const MAX_EVALUATION_WINDOW_MS = Math.max(...Object.values(EVALUATION_WINDOWS));
+export const MAX_EVALUATION_WINDOW_HOURS = MAX_EVALUATION_WINDOW_MS / (3600 * 1000);
+
+export function assertEvaluationRetentionConfig() {
+  if (MAX_EVALUATION_WINDOW_MS > SNAPSHOT_RETENTION_MS) {
+    const message =
+      `[evaluationStore] Evaluation window (${MAX_EVALUATION_WINDOW_HOURS}h) ` +
+      `exceeds snapshot retention (${SNAPSHOT_RETENTION_HOURS}h). ` +
+      "Increase snapshot retention before evaluating signals.";
+    console.error(message);
+    throw new Error(message);
+  }
+}
+
+assertEvaluationRetentionConfig();
 
 // ─── In-memory stores ─────────────────────────────────────────────────────────
 
@@ -83,7 +109,8 @@ export function loadEvaluationStore() {
  * @param {string[]}       evalWindows — default ["24h","72h"]
  * @returns {SignalRecord}
  */
-export function recordSignal(candidate, snapshotId, evalWindows = ["24h", "72h"]) {
+export function recordSignal(candidate, snapshotId, evalWindows = DEFAULT_EVAL_WINDOWS) {
+  assertEvaluationRetentionConfig();
   const recordId = `sig_${candidate.ticker}_${Date.now()}`;
 
   const record = {
@@ -128,6 +155,7 @@ export function recordSignals(candidates, snapshotId) {
  * @returns {SignalRecord[]}
  */
 export function getPendingEvaluations(window) {
+  assertEvaluationRetentionConfig();
   const windowMs    = parseWindowMs(window);
   const now         = Date.now();
   const windowLabel = window;
@@ -253,8 +281,7 @@ export function getAccuracyStats() {
 // ─── Utility ──────────────────────────────────────────────────────────────────
 
 export function parseWindowMs(window) {
-  const map = { "24h": 24*3600*1000, "72h": 72*3600*1000, "7d": 7*24*3600*1000 };
-  return map[window] ?? 24*3600*1000;
+  return EVALUATION_WINDOWS[window] ?? EVALUATION_WINDOWS["24h"];
 }
 
 loadEvaluationStore();

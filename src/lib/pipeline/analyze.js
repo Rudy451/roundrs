@@ -17,8 +17,11 @@
 //   - surface catalysts or risks explicitly mentioned in posts
 //   - flag when the data is insufficient to draw conclusions
 //
-// One API call per pipeline run. All tickers batched.
-// Falls back to deterministic classification if API fails.
+// Fallback sources:
+//   "claude"                    — AI classification succeeded
+//   "deterministic_fallback"    — AI was intentionally skipped (analyze:false)
+//   "claude_timeout_fallback"   — API call timed out transiently (not penalized by S3)
+//   "claude_missing_fallback"   — AI returned fewer results than expected
 
 // ─── System prompt ────────────────────────────────────────────────────────────
 
@@ -68,15 +71,20 @@ OUTPUT: Return ONLY a valid JSON array. No markdown, no backticks, no preamble.
 
 /**
  * Format a RankedTicker into a compact evidence block for the prompt.
- * Keeps the payload small — Claude only needs what's in the posts.
+ *
+ * Body preview is capped at 400 chars (up from 200) to give Claude enough
+ * context to distinguish thesis from hype. The audit noted that 200-char
+ * truncation often cuts off before the argumentative content of a post.
  *
  * @param {RankedTicker} signal
  * @returns {string}
  */
-function formatSignalForPrompt(signal, nowMs = Date.now()) {
+function formatSignalForPrompt(signal) {
+  const BODY_PREVIEW_CHARS = 400; // increased from 200 per audit §2.3
+
   const posts = (signal.samplePosts ?? []).map((p, i) => {
-    const age    = Math.round((nowMs / 1000 - p.createdUtc) / 3600);
-    const body   = p.bodyPreview?.trim() || "(no body)";
+    const age    = Math.round((Date.now() / 1000 - p.createdUtc) / 3600);
+    const body   = (p.bodyPreview?.trim() || "(no body)").slice(0, BODY_PREVIEW_CHARS);
     const source = p.theme ? `r/${p.subreddit} via theme:${p.theme}` : `r/${p.subreddit}`;
     return (
       `  Post ${i + 1} [${source}, ↑${p.upvotes}, ${p.numComments} comments, ${age}h ago]:\n` +
@@ -94,20 +102,17 @@ function formatSignalForPrompt(signal, nowMs = Date.now()) {
 }
 
 // ─── Deterministic fallback classifier ───────────────────────────────────────
-//
-// Used when the API call fails. Deterministic only.
-// Based on structural signals already computed by prioritize.js.
 
 /**
  * @param {RankedTicker} signal
+ * @param {string} source — caller specifies the fallback reason
  * @returns {TickerAnalysis}
  */
-function deterministicAnalysis(signal) {
-  const penalty    = signal.penaltyAdjustment ?? 0;
-  const quality    = signal.qualityScore      ?? 50;
-  const consistency = signal.consistencyScore ?? 50;
+function deterministicAnalysis(signal, source = "deterministic_fallback") {
+  const penalty     = signal.penaltyAdjustment ?? 0;
+  const quality     = signal.qualityScore      ?? 50;
+  const consistency = signal.consistencyScore  ?? 50;
 
-  // Classify by scoring dimensions
   let signalType;
   let narrative;
   let confidence;
@@ -137,7 +142,7 @@ function deterministicAnalysis(signal) {
     narrative_summary: narrative,
     key_catalyst:      null,
     key_risk:          null,
-    source:            "deterministic_fallback",
+    source,
   };
 }
 
@@ -156,7 +161,6 @@ function deterministicAnalysis(signal) {
 export async function analyzeSignals(signals, {
   topN      = 10,
   timeoutMs = 12_000,
-  nowMs     = Date.now(),
 } = {}) {
   if (!signals || signals.length === 0) return [];
 
@@ -164,7 +168,7 @@ export async function analyzeSignals(signals, {
 
   // ── Build prompt ───────────────────────────────────────────────────────────
 
-  const evidenceBlocks = targets.map(signal => formatSignalForPrompt(signal, nowMs)).join("\n\n---\n\n");
+  const evidenceBlocks = targets.map(formatSignalForPrompt).join("\n\n---\n\n");
 
   const userMessage =
     `Analyze these ${targets.length} ticker signals from the current pipeline run.\n\n` +
@@ -200,7 +204,6 @@ export async function analyzeSignals(signals, {
     const data = await res.json();
     const raw  = data.content.map(b => b.text || "").join("");
 
-    // Strip markdown fencing and parse
     const clean = raw.replace(/```json|```/g, "").trim();
     const match = clean.match(/\[[\s\S]*\]/);
     if (!match) throw new Error("No JSON array in response");
@@ -208,9 +211,8 @@ export async function analyzeSignals(signals, {
     const parsed = JSON.parse(match[0]);
     if (!Array.isArray(parsed)) throw new Error("Response is not an array");
 
-    // Validate and normalize each entry
     const validated = parsed.map((entry, i) => {
-      const fallback = deterministicAnalysis(targets[i] ?? targets[0]);
+      const fallback = deterministicAnalysis(targets[i] ?? targets[0], "claude_missing_fallback");
       return {
         ticker:            entry.ticker            ?? targets[i]?.ticker ?? "?",
         signal_type:       VALID_SIGNAL_TYPES.has(entry.signal_type) ? entry.signal_type : fallback.signal_type,
@@ -224,13 +226,11 @@ export async function analyzeSignals(signals, {
       };
     });
 
-    // Ensure we have one result per input ticker
-    // If Claude returned fewer results than expected, pad with fallbacks
     if (validated.length < targets.length) {
       const returned = new Set(validated.map(v => v.ticker));
       for (const sig of targets) {
         if (!returned.has(sig.ticker)) {
-          validated.push({ ...deterministicAnalysis(sig), source: "claude_missing_fallback" });
+          validated.push(deterministicAnalysis(sig, "claude_missing_fallback"));
         }
       }
     }
@@ -238,8 +238,24 @@ export async function analyzeSignals(signals, {
     return validated;
 
   } catch (err) {
-    console.warn(`[analyze] AI analysis failed (${err.message}), using deterministic fallback`);
-    return targets.map(s => ({ ...deterministicAnalysis(s), source: "deterministic_fallback" }));
+    // ── Distinguish timeout from intentional skip ─────────────────────────────
+    //
+    // "claude_timeout_fallback" signals to shortlist.js (rule S3) that this
+    // fallback was caused by a transient API failure, not a deliberate choice
+    // to skip AI analysis. S3 can inspect this and choose not to penalize.
+    //
+    // This prevents a degraded Claude API from producing a systematically
+    // worse shortlist on every degraded run.
+    const fallbackSource = err.name === "AbortError"
+      ? "claude_timeout_fallback"
+      : "deterministic_fallback";
+
+    const reason = err.name === "AbortError"
+      ? `API timeout after ${timeoutMs}ms`
+      : err.message;
+
+    console.warn(`[analyze] AI analysis failed (${reason}), using ${fallbackSource}`);
+    return targets.map(s => deterministicAnalysis(s, fallbackSource));
   }
 }
 
@@ -250,7 +266,6 @@ const VALID_CONFIDENCE   = new Set(["high", "medium", "low"]);
 
 /**
  * Merge analysis results back into the signal array.
- * Adds an `analysis` field to each RankedTicker.
  *
  * @param {RankedTicker[]}   signals
  * @param {TickerAnalysis[]} analyses

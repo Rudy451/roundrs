@@ -15,10 +15,14 @@
 //   2. Soft down-ranks  — reduce score, still eligible
 //   3. Quality gate     — minimum final score after adjustments
 //   4. Size cap         — return at most maxCandidates
+//
+// Fallback source types (from analyze.js):
+//   "claude"                  — AI succeeded, no penalty
+//   "deterministic_fallback"  — AI intentionally skipped (analyze:false) → S3 applies
+//   "claude_timeout_fallback" — API timed out transiently → S3 does NOT apply
+//   "claude_missing_fallback" — AI returned fewer results than expected → S3 applies
 
 // ─── Filter config ────────────────────────────────────────────────────────────
-//
-// All thresholds live here. Change thresholds here, nowhere else.
 
 export const FILTER_CONFIG = {
   // Hard exclusion thresholds
@@ -32,7 +36,7 @@ export const FILTER_CONFIG = {
   downrank: {
     hypeSignal:                 12,   // penalize hype-classified signals
     lowConfidence:               8,   // penalize low-confidence AI classification
-    deterministicFallback:       5,   // slight penalty when AI wasn't available
+    deterministicFallback:       5,   // slight penalty when AI wasn't available (intentional skip)
     noAnalysis:                  3,   // minor penalty when analysis field is null
     mixedSignal:                 4,   // mixed signals are less actionable
   },
@@ -41,7 +45,6 @@ export const FILTER_CONFIG = {
   minAdjustedScore:             35,
 
   // Signal type preferences — used for tiebreaking and display sorting
-  // Higher = more preferred
   signalTypeRank: {
     thesis:  4,
     news:    3,
@@ -62,11 +65,6 @@ export const FILTER_CONFIG = {
 };
 
 // ─── Rule definitions ─────────────────────────────────────────────────────────
-//
-// Each rule is a function that takes a signal and returns:
-//   { action: "exclude", reason: string }  — drop this signal
-//   { action: "downrank", amount: number, reason: string } — reduce score
-//   { action: "pass" }  — no action
 
 const HARD_EXCLUSION_RULES = [
 
@@ -96,7 +94,6 @@ const HARD_EXCLUSION_RULES = [
   },
 
   // Rule H3: Hype signal with significant penalty
-  // Hype alone is not excluded — hype + penalty is.
   function hypePlusPenalty(signal) {
     const type    = signal.analysis?.signal_type;
     const penalty = signal.penaltyAdjustment ?? 0;
@@ -111,8 +108,6 @@ const HARD_EXCLUSION_RULES = [
   },
 
   // Rule H4: Low confidence + hype = hard exclude
-  // Low confidence alone is not excluded (handled by soft downrank).
-  // Low confidence + hype together are not worth investigating.
   function lowConfidenceHype(signal) {
     const type       = signal.analysis?.signal_type;
     const confidence = signal.analysis?.confidence;
@@ -155,17 +150,30 @@ const SOFT_DOWNRANK_RULES = [
     return { action: "pass" };
   },
 
-  // Rule S3: Deterministic fallback (AI wasn't available for this ticker)
+  // Rule S3: Deterministic fallback (AI was intentionally skipped or missing)
+  //
+  // IMPORTANT: "claude_timeout_fallback" is excluded from this penalty.
+  // A transient API timeout should not permanently degrade a signal's score.
+  // Only apply the penalty when AI was intentionally not run (analyze:false)
+  // or when Claude returned an incomplete response (claude_missing_fallback).
   function downrankFallback(signal) {
-    if (signal.analysis?.source === "deterministic_fallback" ||
-        signal.analysis?.source === "claude_missing_fallback") {
+    const source = signal.analysis?.source;
+
+    // Timeout fallback: transient failure, not the signal's fault — no penalty
+    if (source === "claude_timeout_fallback") {
+      return { action: "pass" };
+    }
+
+    // Intentional skip or missing result — apply normal penalty
+    if (source === "deterministic_fallback" || source === "claude_missing_fallback") {
       return {
         action: "downrank",
         rule:   "S3",
         amount: FILTER_CONFIG.downrank.deterministicFallback,
-        reason: `AI analysis unavailable — deterministic fallback used. Down-ranked by ${FILTER_CONFIG.downrank.deterministicFallback} points.`,
+        reason: `AI analysis unavailable (${source}) — deterministic fallback used. Down-ranked by ${FILTER_CONFIG.downrank.deterministicFallback} points.`,
       };
     }
+
     return { action: "pass" };
   },
 
@@ -198,24 +206,11 @@ const SOFT_DOWNRANK_RULES = [
 
 // ─── Core filtering logic ─────────────────────────────────────────────────────
 
-/**
- * Apply all rules to a single signal and return the decision record.
- *
- * @param {object} signal — merged RankedTicker with .analysis
- * @returns {{
- *   ticker:         string,
- *   decision:       "include" | "exclude",
- *   adjustedScore:  number,
- *   appliedRules:   string[],
- *   exclusionRule:  string | null,
- *   reason:         string,
- * }}
- */
 function evaluateSignal(signal) {
   const appliedRules = [];
   let   adjustment   = 0;
 
-  // Phase 1: Hard exclusions (checked in order, first match wins)
+  // Phase 1: Hard exclusions
   for (const rule of HARD_EXCLUSION_RULES) {
     const result = rule(signal);
     if (result.action === "exclude") {
@@ -230,7 +225,7 @@ function evaluateSignal(signal) {
     }
   }
 
-  // Phase 2: Soft down-ranks (all rules applied, adjustments accumulated)
+  // Phase 2: Soft down-ranks
   for (const rule of SOFT_DOWNRANK_RULES) {
     const result = rule(signal);
     if (result.action === "downrank") {
@@ -253,7 +248,6 @@ function evaluateSignal(signal) {
     };
   }
 
-  // Include
   const reason = appliedRules.length > 0
     ? `Included with adjustments: ${appliedRules.join("; ")}`
     : "Included — passed all rules without adjustment.";
@@ -269,28 +263,15 @@ function evaluateSignal(signal) {
 }
 
 // ─── Sort key ─────────────────────────────────────────────────────────────────
-//
-// Primary: adjustedScore DESC
-// Secondary: signal type preference (thesis > news > mixed > hype/unknown)
-// Tertiary: confidence (high > medium > low)
-// Quaternary: ticker ASC (deterministic tiebreak)
 
 function sortKey(candidate) {
   const typeRank = FILTER_CONFIG.signalTypeRank[candidate.signalType] ?? 1;
   const confRank = FILTER_CONFIG.confidenceRank[candidate.confidence] ?? 1;
-  // Encode as a single comparable number (adjustedScore dominates)
   return candidate.adjustedScore * 1000 + typeRank * 10 + confRank;
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 
-/**
- * Filter a ranked+analyzed signal batch down to the final candidate shortlist.
- *
- * @param {object[]} signals — RankedTicker[] with .analysis attached
- * @param {object}   config  — optional overrides to FILTER_CONFIG
- * @returns {ShortlistResult}
- */
 export function buildShortlist(signals, config = {}) {
   if (!signals || signals.length === 0) {
     return { candidates: [], excluded: [], stats: buildStats([], []) };
@@ -301,13 +282,11 @@ export function buildShortlist(signals, config = {}) {
   const candidates = [];
   const excluded   = [];
 
-  // Evaluate every signal
   for (const signal of signals) {
     const evaluation = evaluateSignal(signal);
 
     if (evaluation.decision === "include") {
       candidates.push({
-        // FinalCandidate schema
         ticker:           signal.ticker,
         finalScore:       signal.finalScore,
         adjustedScore:    evaluation.adjustedScore,
@@ -316,7 +295,6 @@ export function buildShortlist(signals, config = {}) {
         narrativeSummary: signal.analysis?.narrative_summary ?? null,
         keyCatalyst:      signal.analysis?.key_catalyst ?? null,
         keyRisk:          signal.analysis?.key_risk     ?? null,
-        // Score breakdown for explainability
         scoreBreakdown: {
           baseScore:          signal.baseScore,
           concentrationScore: signal.concentrationScore,
@@ -327,10 +305,8 @@ export function buildShortlist(signals, config = {}) {
           filterAdjustment:   -(signal.finalScore - evaluation.adjustedScore),
           adjustedScore:      evaluation.adjustedScore,
         },
-        // Applied rules for audit trail
         appliedRules: evaluation.appliedRules,
         reason:       evaluation.reason,
-        // Pass-through for UI
         mentions:     signal.mentions,
         velocity:     signal.velocity,
         avgUpvotes:   signal.avgUpvotes,
@@ -348,16 +324,14 @@ export function buildShortlist(signals, config = {}) {
     }
   }
 
-  // Sort candidates by composite key, then apply size cap
   candidates.sort((a, b) => {
     const diff = sortKey(b) - sortKey(a);
     if (diff !== 0) return diff;
-    return a.ticker.localeCompare(b.ticker); // deterministic final tiebreak
+    return a.ticker.localeCompare(b.ticker);
   });
 
   const final = candidates.slice(0, cfg.maxCandidates);
 
-  // Any candidates cut by size cap go to excluded with explanation
   for (const c of candidates.slice(cfg.maxCandidates)) {
     excluded.push({
       ticker:        c.ticker,
@@ -379,9 +353,9 @@ export function buildShortlist(signals, config = {}) {
 // ─── Stats ────────────────────────────────────────────────────────────────────
 
 function buildStats(candidates, excluded) {
-  const total     = candidates.length + excluded.length;
-  const byType    = {};
-  const byRule    = {};
+  const total  = candidates.length + excluded.length;
+  const byType = {};
+  const byRule = {};
 
   for (const c of candidates) {
     byType[c.signalType] = (byType[c.signalType] ?? 0) + 1;
@@ -407,11 +381,6 @@ function buildStats(candidates, excluded) {
   };
 }
 
-/**
- * Format the shortlist for logging / console output.
- * @param {ShortlistResult} result
- * @returns {string}
- */
 export function summarizeShortlist(result) {
   const { candidates, excluded, stats } = result;
   const lines = [

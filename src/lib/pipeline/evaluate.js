@@ -45,6 +45,13 @@ export const EVAL_CONFIG = {
   noiseMaxSnapshots:          1,     // appeared in only this many → spike and gone
   confirmedConsistencyMin:    0.50,  // must appear in >= 50% of intervening snapshots
 
+  // Minimum snapshots in the eval window to attempt any outcome classification.
+  // Below this threshold, we have insufficient data and must return "inconclusive"
+  // rather than risk a false "noise" result from missing/purged snapshot data.
+  // At 30min cadence: 24h = 48 snapshots, 72h = 144 snapshots.
+  // We require at least 3 to avoid classifying pure absence-of-data as noise.
+  minSnapshotsForClassification: 3,
+
   // Outcome score weights
   outcomeWeights: {
     attentionRatio:    0.40,
@@ -54,10 +61,6 @@ export const EVAL_CONFIG = {
 };
 
 // ─── Metric: attention ratio ──────────────────────────────────────────────────
-//
-// mentionsAtEval / mentionsAtSurface
-// Represents whether attention continued, held, or faded.
-// Clamped to avoid extreme outliers inflating the score.
 
 function computeAttentionRatio(mentionsAtSurface, mentionsAtEval) {
   if (mentionsAtSurface === 0) return mentionsAtEval > 0 ? 1.5 : 0;
@@ -72,12 +75,6 @@ function classifyAttentionTrend(ratio) {
 }
 
 // ─── Metric: consistency ─────────────────────────────────────────────────────
-//
-// Fraction of intervening snapshots (between surfaceTime and evalTime)
-// in which this ticker appeared with at least one mention.
-//
-// Rising/sustained attention across multiple snapshots = real interest.
-// Single-snapshot spike = noise.
 
 function computeConsistency(ticker, snapshots) {
   if (!snapshots || snapshots.length === 0) return 0;
@@ -90,9 +87,6 @@ function computeConsistency(ticker, snapshots) {
 }
 
 // ─── Metric: cross-subreddit spread ──────────────────────────────────────────
-//
-// Did the ticker appear across multiple subreddits in the eval snapshot?
-// Organic interest tends to spread. Coordinated posts stay in one community.
 
 function computeCrossSubreddit(ticker, evalSnapshot) {
   if (!evalSnapshot) return false;
@@ -101,20 +95,11 @@ function computeCrossSubreddit(ticker, evalSnapshot) {
 }
 
 // ─── Outcome score ────────────────────────────────────────────────────────────
-//
-// Composite 0–100 score measuring overall outcome quality.
-// Higher = the signal was more valid.
 
 function computeOutcomeScore(attentionRatio, consistency, crossSubreddit) {
-  // Normalize attention ratio to [0, 100]
-  // 0 = gone, 1.0 = same as surface, 3.0+ = tripled
-  const ratioScore = Math.min(100, (attentionRatio / 3.0) * 100);
-
-  // Consistency is already [0, 1] → [0, 100]
+  const ratioScore       = Math.min(100, (attentionRatio / 3.0) * 100);
   const consistencyScore = consistency * 100;
-
-  // Cross-subreddit is binary: 0 or 100
-  const spreadScore = crossSubreddit ? 100 : 0;
+  const spreadScore      = crossSubreddit ? 100 : 0;
 
   const w = EVAL_CONFIG.outcomeWeights;
   return Math.round(
@@ -125,11 +110,8 @@ function computeOutcomeScore(attentionRatio, consistency, crossSubreddit) {
 }
 
 // ─── Outcome classification ───────────────────────────────────────────────────
-//
-// Deterministic rule application. Same inputs always produce same outcome.
-// Rules applied in order — first match wins.
 
-function classifyOutcome(attentionRatio, attentionTrend, snapshotsCounted, consistency, outcomeScore) {
+function classifyOutcome(attentionRatio, attentionTrend, snapshotsCounted, consistency) {
   // Confirmed: sustained attention across multiple runs
   if (
     snapshotsCounted >= EVAL_CONFIG.confirmedMinSnapshots &&
@@ -163,6 +145,52 @@ function classifyOutcome(attentionRatio, attentionTrend, snapshotsCounted, consi
   };
 }
 
+// ─── Result builder ───────────────────────────────────────────────────────────
+//
+// Extracted so both the normal path and the data-insufficiency early-exit
+// path produce identical output shapes.
+
+function buildEvalResult(record, window, {
+  attentionRatio,
+  attentionTrend,
+  consistency,
+  crossSubreddit,
+  snapshotsCounted,
+  outcomeScore,
+  classification,
+  intervalSnapshots,
+  evalSnapshot,
+  mentionsAtEval,
+}) {
+  return {
+    evalId:             `eval_${record.recordId}_${window}`,
+    recordId:           record.recordId,
+    ticker:             record.ticker,
+    window,
+    evaluatedAt:        Date.now(),
+    // Frozen initial state — never modified after surfacing
+    initialScore:       record.adjustedScore,
+    initialSignalType:  record.signalType,
+    initialConfidence:  record.confidence,
+    mentionsAtSurface:  record.mentionsAtSurface,
+    // Outcome metrics
+    mentionsAtEval,
+    attentionRatio:     Math.round(attentionRatio * 100) / 100,
+    attentionTrend,
+    crossSubreddit,
+    snapshotsCounted,
+    consistencyScore:   Math.round(consistency * 100) / 100,
+    outcomeScore,
+    // Classification
+    outcome:            classification.outcome,
+    successFlag:        classification.successFlag,
+    outcomeReason:      classification.outcomeReason,
+    // Data quality
+    snapshotsAvailable: intervalSnapshots.length,
+    evalSnapshotId:     evalSnapshot?.snapshotId ?? null,
+  };
+}
+
 // ─── Single signal evaluation ─────────────────────────────────────────────────
 
 /**
@@ -178,8 +206,8 @@ function evaluateRecord(record, window) {
   const evalAt       = surfacedAt + evalWindowMs;
   const now          = Date.now();
 
-  // Collect snapshots between surfaceTime and evalTime
-  // These are the only snapshots we're allowed to use — no hindsight
+  // Collect snapshots between surfaceTime and evalTime.
+  // These are the only snapshots we're allowed to use — no hindsight.
   const intervalSnapshots = getSnapshotsInRange(surfacedAt, Math.min(evalAt, now));
 
   // Latest snapshot in the eval window is the "eval snapshot"
@@ -188,51 +216,56 @@ function evaluateRecord(record, window) {
     : null;
 
   // Find this ticker in the eval snapshot
-  const evalRecord = evalSnapshot?.tickers?.find(t => t.ticker === record.ticker);
+  const evalRecord     = evalSnapshot?.tickers?.find(t => t.ticker === record.ticker);
   const mentionsAtEval = evalRecord?.mentions ?? 0;
 
   // Compute metrics
-  const attentionRatio    = computeAttentionRatio(record.mentionsAtSurface, mentionsAtEval);
-  const attentionTrend    = classifyAttentionTrend(attentionRatio);
-  const consistency       = computeConsistency(record.ticker, intervalSnapshots);
-  const crossSubreddit    = computeCrossSubreddit(record.ticker, evalSnapshot);
-  const snapshotsCounted  = intervalSnapshots.filter(s =>
+  const attentionRatio   = computeAttentionRatio(record.mentionsAtSurface, mentionsAtEval);
+  const attentionTrend   = classifyAttentionTrend(attentionRatio);
+  const consistency      = computeConsistency(record.ticker, intervalSnapshots);
+  const crossSubreddit   = computeCrossSubreddit(record.ticker, evalSnapshot);
+  const snapshotsCounted = intervalSnapshots.filter(s =>
     s.tickers.some(t => t.ticker === record.ticker)
   ).length;
-  const outcomeScore      = computeOutcomeScore(attentionRatio, consistency, crossSubreddit);
+  const outcomeScore     = computeOutcomeScore(attentionRatio, consistency, crossSubreddit);
 
-  // Classify
+  // ── Data sufficiency guard ────────────────────────────────────────────────
+  //
+  // If fewer snapshots than the minimum exist in the eval window, we cannot
+  // distinguish "signal was noise" from "evidence was purged before eval ran."
+  // Force "inconclusive" rather than risk logging a false-noise classification
+  // that could corrupt the feedback loop's weight recommendations.
+  //
+  // This happens when the snapshot ring buffer (snapshotStore.js MAX_SNAPSHOTS)
+  // rotates out snapshots faster than the evaluation window elapses. Increasing
+  // MAX_SNAPSHOTS to 200 reduces but does not eliminate this risk.
+  if (intervalSnapshots.length < EVAL_CONFIG.minSnapshotsForClassification) {
+    const classification = {
+      outcome:      "inconclusive",
+      successFlag:  false,
+      outcomeReason: `Insufficient snapshot data: only ${intervalSnapshots.length} snapshot(s) available in the ${window} window. Required ≥ ${EVAL_CONFIG.minSnapshotsForClassification}. Snapshots may have been purged before evaluation ran. Increase MAX_SNAPSHOTS in snapshotStore.js if this recurs.`,
+    };
+    console.warn(
+      `[evaluate] ${record.ticker} (${window}): forced inconclusive — ` +
+      `only ${intervalSnapshots.length} snapshots available, need ≥ ${EVAL_CONFIG.minSnapshotsForClassification}`
+    );
+    return buildEvalResult(record, window, {
+      attentionRatio, attentionTrend, consistency, crossSubreddit,
+      snapshotsCounted, outcomeScore, classification,
+      intervalSnapshots, evalSnapshot, mentionsAtEval,
+    });
+  }
+
+  // Classify normally
   const classification = classifyOutcome(
-    attentionRatio, attentionTrend, snapshotsCounted, consistency, outcomeScore
+    attentionRatio, attentionTrend, snapshotsCounted, consistency
   );
 
-  return {
-    evalId:            `eval_${record.recordId}_${window}`,
-    recordId:          record.recordId,
-    ticker:            record.ticker,
-    window,
-    evaluatedAt:       now,
-    // Frozen initial state — never modified after surfacing
-    initialScore:      record.adjustedScore,
-    initialSignalType: record.signalType,
-    initialConfidence: record.confidence,
-    mentionsAtSurface: record.mentionsAtSurface,
-    // Outcome metrics
-    mentionsAtEval,
-    attentionRatio:    Math.round(attentionRatio * 100) / 100,
-    attentionTrend,
-    crossSubreddit,
-    snapshotsCounted,
-    consistencyScore:  Math.round(consistency * 100) / 100,
-    outcomeScore,
-    // Classification
-    outcome:           classification.outcome,
-    successFlag:       classification.successFlag,
-    outcomeReason:     classification.outcomeReason,
-    // Data quality
-    snapshotsAvailable: intervalSnapshots.length,
-    evalSnapshotId:    evalSnapshot?.snapshotId ?? null,
-  };
+  return buildEvalResult(record, window, {
+    attentionRatio, attentionTrend, consistency, crossSubreddit,
+    snapshotsCounted, outcomeScore, classification,
+    intervalSnapshots, evalSnapshot, mentionsAtEval,
+  });
 }
 
 // ─── Batch evaluation ─────────────────────────────────────────────────────────

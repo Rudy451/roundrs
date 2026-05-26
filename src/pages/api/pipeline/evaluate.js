@@ -30,6 +30,8 @@ import {
   saveEvaluation,
   getAccuracyStats,
   getSignalRecord,
+  parseWindowMs,
+  assertEvaluationRetentionConfig,
 } from "@/lib/pipeline/evaluationStore";
 
 import {
@@ -174,7 +176,8 @@ function classifyOutcome(attentionRatio, attentionTrend, snapshotsCounted, consi
  * @returns {EvaluationResult}
  */
 function evaluateRecord(record, window) {
-  const evalWindowMs = window === "72h" ? 72*3600*1000 : 24*3600*1000;
+  assertEvaluationRetentionConfig();
+  const evalWindowMs = parseWindowMs(window);
   const surfacedAt   = record.surfacedAt;
   const evalAt       = surfacedAt + evalWindowMs;
   const now          = Date.now();
@@ -246,6 +249,7 @@ function evaluateRecord(record, window) {
  * @returns {{ evaluated: number, results: EvaluationResult[] }}
  */
 export async function runPendingEvaluations(window = "24h") {
+  assertEvaluationRetentionConfig();
   const pending = getPendingEvaluations(window);
 
   if (pending.length === 0) {
